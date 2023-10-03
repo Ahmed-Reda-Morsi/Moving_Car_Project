@@ -1,9 +1,4 @@
-/*
- * dio_interface.h
- *
- * Created: 10/3/2023 11:42:42 AM
- *  Author: awahba
- */ 
+
 
 #ifndef DIO_INTERFACE_H_
 #define DIO_INTERFACE_H_
