@@ -3,9 +3,9 @@
 #include <math.h>
 
 //#include "../GIE/GIE_int.h"
-#include "timer_config.h"
-#include "timer_interface.h"
-#include "timer_private.h"
+#include "timer0_config.h"
+#include "timer0_interface.h"
+#include "timer0_private.h"
 
 void (*TIMER0_CALL_BACK_OverFlow)(void)=NULL_PTR;
 void (*TIMER0_CALL_BACK_REQUIREDTIME)(void)=NULL_PTR;

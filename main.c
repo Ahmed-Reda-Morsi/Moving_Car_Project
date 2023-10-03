@@ -1,12 +1,7 @@
-/*
- * Moving Car Application.c
- *
- * Created: 10/3/2023 10:45:41 AM
- * Author : awahba
- */ 
+
 #include "MCAL/dio/dio_interface.h"
-#include "MCAL/timer/timer0/timer_interface.h"
-#include "MCAL/timer/timer0/timer_config.h"
+#include "MCAL/timer/timer0/timer0_interface.h"
+#include "MCAL/timer/timer0/timer0_config.h"
 
 int main(void)
 {
