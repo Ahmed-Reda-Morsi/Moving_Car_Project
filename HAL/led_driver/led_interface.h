@@ -1,15 +1,26 @@
-/*
- * led_interface.h
- *
- * Created: 10/3/2023 11:59:39 AM
- *  Author: awahba
- */ 
 
 
 #ifndef LED_INTERFACE_H_
 #define LED_INTERFACE_H_
 
 
+
+/*******************************************************************************
+ *                                LIB MATH                                     *
+ *******************************************************************************/
+
+#include "../../LIB/STD_TYPES.h"
+
+
+
+
+/*******************************************************************************
+ *                              Functions Prototypes                           *
+ *******************************************************************************/
+
+void HLED_Init(u8 Copy_u8Port,u8 Copy_u8Pin);
+void HLED_TurnOn(u8 Copy_u8Port,u8 Copy_u8Pin);
+void HLED_TurnOFF(u8 Copy_u8Port,u8 Copy_u8Pin);
 
 
 
