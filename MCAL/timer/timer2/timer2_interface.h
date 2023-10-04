@@ -8,7 +8,7 @@
  *                               standard LIBS                                  *
  *******************************************************************************/
 
-#include "../../LIB/STD_TYPES.h"
+#include "../../../LIB/STD_TYPES.h"
 
 
 
@@ -34,7 +34,7 @@ EN_timer2_Error_t MTIMER2_SetCompareMatchValue(u8 Copy_u8CompareMatchValue);
 u8    MTIMER2_u8CheckOverFlow(void);
 u8    MTIMER2_u8CheckCompareMatchMode(void);
 EN_timer2_Error_t MTIMER2_SetCallBack_OverFlow(void(*TIMER2_OF_ISR)(void));
-void MTIMER2_SetCallBack_CompareMatchValue(void(*TIMER2_CMV_ISR)(void));
+EN_timer2_Error_t MTIMER2_SetCallBack_CompareMatchValue(void(*TIMER2_CMV_ISR)(void));
 
 
 

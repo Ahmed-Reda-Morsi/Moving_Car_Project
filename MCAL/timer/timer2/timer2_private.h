@@ -5,7 +5,7 @@
 #define TIMER2_PRIVATE_H_
 
 
-#include "../../LIB/STD_TYPES.h"
+#include "../../../LIB/STD_TYPES.h"
 
 
 //_________________|Timer/Counter2 Control Register|____________________

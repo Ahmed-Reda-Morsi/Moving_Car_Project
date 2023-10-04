@@ -88,7 +88,7 @@ EN_timer2_Error_t MTIMER2_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
 		break;
 
 		default:
-			return EN_timer2_Error_t =TIMER2_NOT_OK;
+			return errorStatus =TIMER2_NOT_OK;
 		break;
 
 	}
@@ -146,7 +146,7 @@ EN_timer2_Error_t MTIMER2_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
 		break;
 
 		default:
-		return EN_timer2_Error_t =TIMER2_NOT_OK;
+		return  errorStatus =TIMER2_NOT_OK;
 
 		break;
 	}
@@ -169,7 +169,7 @@ EN_timer2_Error_t MTIMER2_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
 
 EN_timer2_Error_t MTIMER2_CompareOutputMode(u8 Copy_u8Mode,u8 Copy_u8COM)
 {
-	 EN_timerError_t errorStatus = TIMER0_OK;
+	 EN_timer2_Error_t errorStatus = TIMER2_OK;
 
 	switch(Copy_u8Mode)
 	{
@@ -198,7 +198,7 @@ EN_timer2_Error_t MTIMER2_CompareOutputMode(u8 Copy_u8Mode,u8 Copy_u8COM)
 			break;
 
 			default:
-				return EN_timer2_Error_t =TIMER2_NOT_OK;
+				return errorStatus =TIMER2_NOT_OK;
 
 			break;
 		}
@@ -225,7 +225,7 @@ EN_timer2_Error_t MTIMER2_CompareOutputMode(u8 Copy_u8Mode,u8 Copy_u8COM)
 			break;
 
 			default:
-				return EN_timer2_Error_t =TIMER2_NOT_OK;
+				return errorStatus =TIMER2_NOT_OK;
 
 			break;
 		}
@@ -251,14 +251,14 @@ EN_timer2_Error_t MTIMER2_CompareOutputMode(u8 Copy_u8Mode,u8 Copy_u8COM)
 			break;
 
 			default:
-			return EN_timer2_Error_t =TIMER2_NOT_OK;
+			return errorStatus =TIMER2_NOT_OK;
 			
 			break;
 		}
 		break;
 
 		default:
-		return EN_timer2_Error_t =TIMER2_NOT_OK;
+		return errorStatus =TIMER2_NOT_OK;
 	
 		break;
 	}
