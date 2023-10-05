@@ -11,38 +11,46 @@
 #include "button_interface.h"
 #include "button_config.h"
 
-EN_buttonState_t HBTTN_SetButtonPressedCallBack(void (*Copy_Pfunction_ISR_INT_N)(void), EN_extiNumber_t Copy_EXTI_Number)
+
+/*
+ * Description :
+ * This function allows the user to define a callback function that will be called when a
+ * specific button is pressed. It sets up the necessary configurations and associations between
+ * the button and the corresponding external interrupt.
+ */
+
+EN_buttonState_t HBTTN_SetButtonPressedCallBack(void (*ptr_arg_pFunctionISR_INT_N)(void), EN_extiNumber_t enum_arg_EXTI_Number)
 {
-    EN_buttonState_t errorStatus = BUTTON_OK;
-    if (Copy_Pfunction_ISR_INT_N != NULL_PTR)
+    EN_buttonState_t enum_Local_errorStatus = BUTTON_OK;
+    if (ptr_arg_pFunctionISR_INT_N != NULL_PTR)
 
     {
-        switch (Copy_EXTI_Number)
+        switch (enum_arg_EXTI_Number)
         {
         case EXTI0:
-            MEXTI_0_SET_CALL_BACK(Copy_Pfunction_ISR_INT_N);
+            MEXTI_0_SET_CALL_BACK(ptr_arg_pFunctionISR_INT_N);
 			MEXTI_EnableInterrupt(INT0_PIN,RISING_EDGE);
 
             break;
 
         case EXTI1:
-            MEXTI_1_SET_CALL_BACK(Copy_Pfunction_ISR_INT_N);
+            MEXTI_1_SET_CALL_BACK(ptr_arg_pFunctionISR_INT_N);
 			MEXTI_EnableInterrupt(INT1_PIN,RISING_EDGE);
 
             break;
         case EXTI2:
-             MEXTI_1_SET_CALL_BACK(Copy_Pfunction_ISR_INT_N);
+             MEXTI_1_SET_CALL_BACK(ptr_arg_pFunctionISR_INT_N);
 			 MEXTI_EnableInterrupt(INT2_PIN,RISING_EDGE);
 
             break;
 
         default:
-         errorStatus=BUTTON_NOT_OK;
+         enum_Local_errorStatus=BUTTON_NOT_OK;
         }
     }
     else
     {
-        errorStatus=BUTTON_NOT_OK;
+        enum_Local_errorStatus=BUTTON_NOT_OK;
     }
-	return errorStatus;
+	return enum_Local_errorStatus;
 }

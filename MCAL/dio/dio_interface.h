@@ -1,5 +1,3 @@
-
-
 #ifndef DIO_INTERFACE_H_
 #define DIO_INTERFACE_H_
 
@@ -52,7 +50,7 @@ typedef enum
  * Setup the direction of the required pin input/output and return error status.
  * If the input port number or pin number are not correct, The function will not handle the request.
  */
-EN_dioError_t MDIO_SetPinDirection (u8 Copy_u8Port,u8 Copy_u8Pin,u8 Copy_u8Dir);
+EN_dioError_t MDIO_SetPinDirection (u8 u8_arg_portNum,u8 u8_arg_pinNum,u8 u8_arg_pinDir);
 
 
 /*
@@ -61,7 +59,7 @@ EN_dioError_t MDIO_SetPinDirection (u8 Copy_u8Port,u8 Copy_u8Pin,u8 Copy_u8Dir);
  * If the input port number or pin number are not correct, The function will not handle the request.
  * If the pin is input, this function will enable/disable the internal pull-up resistor.
  */
-EN_dioError_t MDIO_SetPinValue (u8 Copy_u8Port,u8 Copy_u8Pin,u8 Copy_u8Value);
+EN_dioError_t MDIO_SetPinValue (u8 u8_arg_portNum,u8 u8_arg_pinNum,u8 u8_arg_value);
 
 /*
  * Description :
@@ -70,7 +68,7 @@ EN_dioError_t MDIO_SetPinValue (u8 Copy_u8Port,u8 Copy_u8Pin,u8 Copy_u8Value);
  * If the output is high, The function will toggle it to low.
  * If the output is low, The function will toggle it to high.
  */
-EN_dioError_t MDIO_TogglePinValue (u8 Copy_u8Port,u8 Copy_u8Pin);
+EN_dioError_t MDIO_TogglePinValue (u8 u8_arg_portNum,u8 u8_arg_pinNum);
 
 
 /*
@@ -78,7 +76,7 @@ EN_dioError_t MDIO_TogglePinValue (u8 Copy_u8Port,u8 Copy_u8Pin);
  * Read and return the value for the required pin, it should be Logic High or Logic Low.
  * If the input port number or pin number are not correct, The function will return Logic Low.
  */
-u8   MDIO_u8GetPinValue (u8 Copy_u8Port,u8 Copy_u8Pin4); 
+u8   MDIO_u8GetPinValue (u8 u8_arg_portNum,u8 u8_arg_pinNum); 
 
 
 /*
@@ -88,7 +86,7 @@ u8   MDIO_u8GetPinValue (u8 Copy_u8Port,u8 Copy_u8Pin4);
  * If the direction value is PORT_OUTPUT all pins in this port should be output pins.
  * If the input port number is not correct, The function will not handle the request.
  */
-EN_dioError_t MDIO_SetPortDirection (u8 Copy_u8Port,u8 Copy_u8Dir);
+EN_dioError_t MDIO_SetPortDirection (u8 u8_arg_portNum,u8 u8_arg_pinDir);
 
 
 /*
@@ -98,7 +96,7 @@ EN_dioError_t MDIO_SetPortDirection (u8 Copy_u8Port,u8 Copy_u8Dir);
  * If any pin in the port is input pin this will activate/deactivate the internal pull-up resistor.
  * If the input port number is not correct, The function will not handle the request.
  */
-EN_dioError_t MDIO_SetPortValue (u8 Copy_u8Port,u8 Copy_u8Value);
+EN_dioError_t MDIO_SetPortValue (u8 u8_arg_portNum,u8 u8_arg_value);
 
 
 /*
@@ -106,7 +104,7 @@ EN_dioError_t MDIO_SetPortValue (u8 Copy_u8Port,u8 Copy_u8Value);
  * Read and return the value of the required port.
  * If the input port number is not correct, The function will return ZERO value.
  */
-u8 MDIO_GetPortValue (u8 Copy_u8Port);
+u8 MDIO_GetPortValue (u8 u8_arg_portNum);
 
 
 /*
@@ -114,7 +112,7 @@ u8 MDIO_GetPortValue (u8 Copy_u8Port);
  * Setup the Pull-up Resistor and return error status.
  * If the input port number or pin number are not correct, The function will not handle the request.
  */
-EN_dioError_t MDIO_SetPullupResistor (u8 Copy_u8Port,u8 Copy_u8Pin);
+EN_dioError_t MDIO_SetPullupResistor (u8 u8_arg_portNum,u8 u8_arg_pinNum);
 
 
 #endif /* DIO_INTERFACE_H_ */

@@ -15,16 +15,16 @@ typedef enum
  *                              Functions Prototypes                           *
  *******************************************************************************/
 
-EN_timerError_t MTIMER0_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler);
-EN_timerError_t MTIMER0_CompareOutputMode(u8 Copy_u8Mode,u8 Copy_u8COM);
-EN_timerError_t MTIMER0_PWMDutyCycle(u8 Copy_u8DutyCycle);
+EN_timerError_t MTIMER0_Init(u8 u8_arg_Mode,u8 u8_arg_PreScaler);
+EN_timerError_t MTIMER0_CompareOutputMode(u8 u8_arg_Mode,u8 u8_arg_COM);
+EN_timerError_t MTIMER0_PWMDutyCycle(u8 u8_arg_DutyCycle);
 
-EN_timerError_t MTIMER0_DelayInterrupt_MS(u32 Copy_u32Delay);
-EN_timerError_t MTIMER0_Delay_MS(u32 Copy_u32Delay);
+EN_timerError_t MTIMER0_DelayInterrupt_MS(u32 u32_arg_Delay);
+EN_timerError_t MTIMER0_Delay_MS(u32 u32_arg_Delay);
 
-EN_timerError_t MTIMER0_SetPreLoad(u16 Copy_u16PreLoad);
+EN_timerError_t MTIMER0_SetPreLoad(u16 u16_arg_PreLoad);
 
-EN_timerError_t MTIMER0_SetCompareMatchValue(u8 Copy_u8CompareMatchValue);
+EN_timerError_t MTIMER0_SetCompareMatchValue(u8 u8_arg_CompareMatchValue);
 
 u8    MTIMER0_u8CheckOverFlow(void);
 u8    MTIMER0_u8CheckCompareMatchMode(void);

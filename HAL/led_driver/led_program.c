@@ -15,57 +15,67 @@
 #include "led_interface.h"
 #include "led_config.h"
 #include "led_interface.h"
-/*******************************************************************************
- *                                LED Initialization Function                   *
- *******************************************************************************/
-EN_LEDErrorState_t HLED_Init(u8 Copy_u8Port,u8 Copy_u8Pin)
+
+/*
+ * Description:
+ * This function initializes a specific LED pin on a given port, enabling it for use and returns error status.
+ */
+
+EN_LEDErrorState_t HLED_Init(u8 u8_arg_Port,u8 u8_arg_Pin)
 {
-	EN_LEDErrorState_t errorStatus=LED_OK;
-	if(!MDIO_SetPinDirection(Copy_u8Port,Copy_u8Pin,PIN_OUT))
+	EN_LEDErrorState_t enum_Local_errorStatus=LED_OK;
+	if(!MDIO_SetPinDirection(u8_arg_Port,u8_arg_Pin,PIN_OUT))
 	{
-		errorStatus=LED_NOT_OK;
+		enum_Local_errorStatus=LED_NOT_OK;
 	}
-	return errorStatus;
+	return enum_Local_errorStatus;
 }
 
 
-
-/*******************************************************************************
- *                                Turn on LED Function                            *
- *******************************************************************************/
-EN_LEDErrorState_t HLED_TurnOn(u8 Copy_u8Port,u8 Copy_u8Pin)
+/*
+ * Description:
+ * This function turns on the specified LED by setting the corresponding pin on the given
+ * port to a logic high level and returns an error status.
+ */
+EN_LEDErrorState_t HLED_TurnOn(u8 u8_arg_Port,u8 u8_arg_Pin)
 {
-		EN_LEDErrorState_t errorStatus=LED_OK;
-		if(!MDIO_SetPinValue(Copy_u8Port,Copy_u8Pin,PIN_HIGH))
+		EN_LEDErrorState_t enum_Local_errorStatus=LED_OK;
+		if(!MDIO_SetPinValue(u8_arg_Port,u8_arg_Pin,PIN_HIGH))
 		{
-			errorStatus=LED_NOT_OK;
+			enum_Local_errorStatus=LED_NOT_OK;
 		}
-		return errorStatus;
+		return enum_Local_errorStatus;
 }
 
+/*
+ * Description:
+ * This function turns off the specified LED by setting the corresponding pin on the
+ * given port to a logic low level and returns the error status.
+ */
 
-/*******************************************************************************
- *                                Turn off LED Function                            *
- *******************************************************************************/
-EN_LEDErrorState_t HLED_TurnOFF(u8 Copy_u8Port,u8 Copy_u8Pin)
+EN_LEDErrorState_t HLED_TurnOFF(u8 u8_arg_Port,u8 u8_arg_Pin)
 {
-	EN_LEDErrorState_t errorStatus=LED_OK;
-	if(!MDIO_SetPinValue(Copy_u8Port,Copy_u8Pin,PIN_LOW))
+	EN_LEDErrorState_t enum_Local_errorStatus=LED_OK;
+	if(!MDIO_SetPinValue(u8_arg_Port,u8_arg_Pin,PIN_LOW))
 	{
-		errorStatus=LED_NOT_OK;
+		enum_Local_errorStatus=LED_NOT_OK;
 	}
-	return errorStatus;
+	return enum_Local_errorStatus;
 }
 
-/*******************************************************************************
- *                                Toggle LED Function                            *
- *******************************************************************************/
-EN_LEDErrorState_t HLED_Toggle(u8 Copy_u8Port,u8 Copy_u8Pin)
+/*
+ * Description:
+ * This function toggles the state of the specified LED. If the LED is currently on,
+ * it will be turned off, and vice versa. The function achieves this by inverting the logic 
+ * level of the corresponding pin on the given port and returns the error status.
+ */
+
+EN_LEDErrorState_t HLED_Toggle(u8 u8_arg_Port,u8 u8_arg_Pin)
 {
-	EN_LEDErrorState_t errorStatus=LED_OK;
-	if(!MDIO_TogglePinValue(Copy_u8Port,Copy_u8Pin))
+	EN_LEDErrorState_t enum_Local_errorStatus=LED_OK;
+	if(!MDIO_TogglePinValue(u8_arg_Port,u8_arg_Pin))
 	{
-		errorStatus=LED_NOT_OK;
+		enum_Local_errorStatus=LED_NOT_OK;
 	}
-	return errorStatus;
+	return enum_Local_errorStatus;
 }

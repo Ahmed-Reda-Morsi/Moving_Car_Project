@@ -39,31 +39,6 @@ EN_extiError_t MEXTI_GlobalInterruptDisable(void)
 }
 
 
-
-
-
-/*
- * Description :
- * This function allows the control of the global interrupt enable
- * state based on the value of Copy_u8GIState. If Copy_u8GIState is GLOBAL_INTERRUPT_ENABLE,
- * it enables the global interrupt by setting the global interrupt enable flag. 
- * If Copy_u8GIState is GLOBAL_INTERRUPT_DISABLE, it disables the global interrupt by clearing
- * the global interrupt enable flag. 
- */
-EN_extiError_t MEXTI_GlobalInterrupt(u8 Copy_u8GIState)
-{
-	EN_extiError_t errorStatus = EXTI_OK;
-	switch (Copy_u8GIState)
-	{
-		case GLOBAL_INTERRUPT_ENABLE: SET_BIT(MEXTINT_SREG_REG, GEI_PIN); break;
-		case GLOBAL_INTERRUPT_DISABLE: CLEAR_BIT(MEXTINT_SREG_REG, GEI_PIN); break;
-		default:
-		errorStatus = EXTI_NOT_OK;
-	}
-	return errorStatus;
-}
-
-
 /*
  * Description :
  * This function enables an external interrupt on the specified interrupt pin
@@ -73,14 +48,14 @@ EN_extiError_t MEXTI_GlobalInterrupt(u8 Copy_u8GIState)
  * the control registers. It also enables the specific external interrupt by setting
  * the corresponding bit in the general interrupt control register (GICR).
  */
-EN_extiError_t MEXTI_EnableInterrupt(u8 Copy_u8InterruptPIN, u8 Copy_u8InterruptSensingLevel)
+EN_extiError_t MEXTI_EnableInterrupt(u8 u8_arg_InterruptPIN, u8 u8_arg_InterruptSensingLevel)
 {
-	EN_extiError_t errorStatus = EXTI_OK;
+	EN_extiError_t enum_Local_errorStatus = EXTI_OK;
 	
-	switch (Copy_u8InterruptPIN)
+	switch (u8_arg_InterruptPIN)
 	{
 	case INT0_PIN:
-			switch (Copy_u8InterruptSensingLevel)
+			switch (u8_arg_InterruptSensingLevel)
 			{
 			case LOW_LEVEL:
 				//The low level of INT0 generates an interrupt request.
@@ -111,7 +86,7 @@ EN_extiError_t MEXTI_EnableInterrupt(u8 Copy_u8InterruptPIN, u8 Copy_u8Interrupt
 		break;
 
 	case INT1_PIN:
-			switch (Copy_u8InterruptSensingLevel)
+			switch (u8_arg_InterruptSensingLevel)
 			{
 			case LOW_LEVEL:
 				//The low level of INT1 generates an interrupt request.
@@ -142,7 +117,7 @@ EN_extiError_t MEXTI_EnableInterrupt(u8 Copy_u8InterruptPIN, u8 Copy_u8Interrupt
 		break;
 
 	case INT2_PIN:
-			switch (Copy_u8InterruptSensingLevel)
+			switch (u8_arg_InterruptSensingLevel)
 			{
 			case FALLING_EDGE:
 				//The falling edge of INT2 generates an interrupt request
@@ -157,9 +132,9 @@ EN_extiError_t MEXTI_EnableInterrupt(u8 Copy_u8InterruptPIN, u8 Copy_u8Interrupt
 		SET_BIT(MEXTINT_GICR_REG, INT2_PIN);
 		break;
 	default:
-		errorStatus = EXTI_NOT_OK;
+		enum_Local_errorStatus = EXTI_NOT_OK;
 	}
-	return errorStatus;
+	return enum_Local_errorStatus;
 }
 
 
@@ -169,10 +144,10 @@ EN_extiError_t MEXTI_EnableInterrupt(u8 Copy_u8InterruptPIN, u8 Copy_u8Interrupt
  * (INT0_PIN, INT1_PIN, or INT2_PIN). It clears the corresponding bit in the general 
  * interrupt control register (GICR) to disable the specific external interrupt.
  */
-EN_extiError_t MEXTI_DisableInterrupt(u8 Copy_u8InterruptPIN)
+EN_extiError_t MEXTI_DisableInterrupt(u8 u8_arg_InterruptPIN)
 {
-		EN_extiError_t errorStatus = EXTI_OK;
-		switch (Copy_u8InterruptPIN)
+		EN_extiError_t enum_Local_errorStatus = EXTI_OK;
+		switch (u8_arg_InterruptPIN)
 		{
 		case INT0_PIN:
 			//disable external interrupt  INT0.
@@ -187,9 +162,9 @@ EN_extiError_t MEXTI_DisableInterrupt(u8 Copy_u8InterruptPIN)
 			CLEAR_BIT(MEXTINT_GICR_REG, INT2_PIN);
 			break;
 		default:
-			errorStatus = EXTI_NOT_OK;
+			enum_Local_errorStatus = EXTI_NOT_OK;
 		}
-		return errorStatus;
+		return enum_Local_errorStatus;
 	
 }
 

@@ -14,13 +14,13 @@ void (*TIMER0_CALL_BACK_CompareMatch)(void)=NULL_PTR;
 /*******************************************************************************
  *                               Static-Variables                              *
  *******************************************************************************/
-static u16 GLOBAL_TIMER0_PRESCALER=0;
+static u16 u16_GLOBAL_TIMER0_PRESCALER=0;
 
-static u32 GLOBAL_TIMER0_NO_OVERFLOW=0;
-static u32 GLOBAL_TIMER0_PRELOAD=0;
+static u32 u32_GLOBAL_TIMER0_NO_OVERFLOW=0;
+static u32 u32_GLOBAL_TIMER0_PRELOAD=0;
 
-static u8 GLOBAL_u8TickTime=0;
-static u16 GLOBAL_u16TimeOverFlow=0;
+static u8 u8_GLOBAL_TickTime=0;
+static u16 u16_GLOBAL_TimeOverFlow=0;
 
 /*******************************************************************************
  *                      Functions Definitions                                  *
@@ -32,10 +32,10 @@ static u16 GLOBAL_u16TimeOverFlow=0;
  * and returns error status.
  * open cfg  header to configure TIMER0
  */
-EN_timerError_t MTIMER0_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
+EN_timerError_t MTIMER0_Init(u8 u8_arg_Mode,u8 u8_arg_PreScaler)
 {
-	 EN_timerError_t errorStatus = TIMER0_OK;
-	 switch(Copy_u8Mode)
+	 EN_timerError_t enum_Local_errorStatus = TIMER0_OK;
+	 switch(u8_arg_Mode)
 	 {
 		case TIMER0_NORMAL_MODE:
 			CLEAR_BIT(MTIMER0_TCCR0_REG, TCCR0_WGM00_BIT);
@@ -64,13 +64,13 @@ EN_timerError_t MTIMER0_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
 			break;
 
 		default:
-			errorStatus = TIMER0_NOT_OK;
+			enum_Local_errorStatus = TIMER0_NOT_OK;
 
 	 }
 
 	 //________________________________| Clock Select MODE|_________________________
 
-	 switch(Copy_u8PreScaler)
+	 switch(u8_arg_PreScaler)
 	 {
 		 case TIMER0_CS_STOP:
 			 CLEAR_BIT(MTIMER0_TCCR0_REG, TCCR0_CS00_BIT);
@@ -88,28 +88,28 @@ EN_timerError_t MTIMER0_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
 			 CLEAR_BIT(MTIMER0_TCCR0_REG, TCCR0_CS00_BIT);
 			 SET_BIT(MTIMER0_TCCR0_REG, TCCR0_CS01_BIT);
 			 CLEAR_BIT(MTIMER0_TCCR0_REG, TCCR0_CS02_BIT);
-			 GLOBAL_TIMER0_PRESCALER=8;
+			 u16_GLOBAL_TIMER0_PRESCALER=8;
 				break;
 
 		 case TIMER0_CS_PRESCALLER_64:
 			 SET_BIT(MTIMER0_TCCR0_REG, TCCR0_CS00_BIT);
 			 SET_BIT(MTIMER0_TCCR0_REG, TCCR0_CS01_BIT);
 			 CLEAR_BIT(MTIMER0_TCCR0_REG, TCCR0_CS02_BIT);
-			 GLOBAL_TIMER0_PRESCALER=64;
+			 u16_GLOBAL_TIMER0_PRESCALER=64;
 				break;
 
 		 case TIMER0_CS_PRESCALLER_256:
 			 CLEAR_BIT(MTIMER0_TCCR0_REG, TCCR0_CS00_BIT);
 			 CLEAR_BIT(MTIMER0_TCCR0_REG, TCCR0_CS01_BIT);
 			 SET_BIT(MTIMER0_TCCR0_REG, TCCR0_CS02_BIT);
-			 GLOBAL_TIMER0_PRESCALER=256;
+			 u16_GLOBAL_TIMER0_PRESCALER=256;
 				break;
 
 		 case TIMER0_CS_PRESCALLER_1024:
 			 SET_BIT(MTIMER0_TCCR0_REG, TCCR0_CS00_BIT);
 			 SET_BIT(MTIMER0_TCCR0_REG, TCCR0_CS01_BIT);
 			 CLEAR_BIT(MTIMER0_TCCR0_REG, TCCR0_CS02_BIT);
-			 GLOBAL_TIMER0_PRESCALER=1024;
+			 u16_GLOBAL_TIMER0_PRESCALER=1024;
 				break;
 
 		 case TIMER0_CS_EXTERNAL_T0_PIN_FALLINGEDGE:
@@ -125,15 +125,15 @@ EN_timerError_t MTIMER0_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
 				break;
 
 		 default:
-			 errorStatus = TIMER0_NOT_OK;
+			 enum_Local_errorStatus = TIMER0_NOT_OK;
  		 }
 
  		 /*calucate in init func. becuase they are depend of Prescaler*/
  		 //calucate Tick time in microsecond unit.
-		 GLOBAL_u8TickTime=(GLOBAL_TIMER0_PRESCALER*1000000UL)/CPU_F;
+		 u8_GLOBAL_TickTime=(u16_GLOBAL_TIMER0_PRESCALER*1000000UL)/CPU_F;
 		//overflow time for Timer0 in microsecond unit.
-		  GLOBAL_u16TimeOverFlow=GLOBAL_u8TickTime*(pow(2,TIMER0_RESOLUTION));
-		  return errorStatus;
+		  u16_GLOBAL_TimeOverFlow=u8_GLOBAL_TickTime*(pow(2,TIMER0_RESOLUTION));
+		  return enum_Local_errorStatus;
 
 }
 
@@ -142,9 +142,9 @@ EN_timerError_t MTIMER0_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
  * Description:
  * This function sets the preload and returns error status.
  */
-EN_timerError_t MTIMER0_SetPreLoad(u16 Copy_u16PreLoad)
+EN_timerError_t MTIMER0_SetPreLoad(u16 u16_arg_PreLoad)
 {
-	MTIMER0_OCR0_REG=Copy_u16PreLoad;
+	MTIMER0_OCR0_REG=u16_arg_PreLoad;
 	return TIMER0_OK;
 }
 
@@ -158,23 +158,23 @@ EN_timerError_t MTIMER0_SetPreLoad(u16 Copy_u16PreLoad)
  * The remainder time is stored in the preload value to be loaded into Timer0 registers after the required number of overflows.
  * The function enables the overflow interrupt for Timer0 to start the delay operation.
  */
-EN_timerError_t MTIMER0_DelayInterrupt_MS(u32 Copy_u32Delay)
+EN_timerError_t MTIMER0_DelayInterrupt_MS(u32 u32_arg_Delay)
 {
 	// user delay in microsecond unit.
-	Copy_u32Delay=Copy_u32Delay*1000UL;
+	u32_arg_Delay=u32_arg_Delay*1000UL;
 
-	if (Copy_u32Delay>=GLOBAL_u16TimeOverFlow) {
+	if (u32_arg_Delay>=u16_GLOBAL_TimeOverFlow) {
 
 		//number of overflow needed to required time.
-		GLOBAL_TIMER0_NO_OVERFLOW=Copy_u32Delay/GLOBAL_u16TimeOverFlow;
+		u32_GLOBAL_TIMER0_NO_OVERFLOW=u32_arg_Delay/u16_GLOBAL_TimeOverFlow;
 
 		//remainder time needed to after number of overflow required time. in  microsecond unit.
-		GLOBAL_TIMER0_PRELOAD=(Copy_u32Delay%GLOBAL_u16TimeOverFlow)*(pow(2,TIMER0_RESOLUTION));
+		u32_GLOBAL_TIMER0_PRELOAD=(u32_arg_Delay%u16_GLOBAL_TimeOverFlow)*(pow(2,TIMER0_RESOLUTION));
 
-	} else if(Copy_u32Delay<GLOBAL_u16TimeOverFlow)
+	} else if(u32_arg_Delay<u16_GLOBAL_TimeOverFlow)
 	{
 		//remainder required time. in  microsecond unit.
-		GLOBAL_TIMER0_PRELOAD=(Copy_u32Delay%GLOBAL_u16TimeOverFlow)*(pow(2,TIMER0_RESOLUTION));
+		u32_GLOBAL_TIMER0_PRELOAD=(u32_arg_Delay%u16_GLOBAL_TimeOverFlow)*(pow(2,TIMER0_RESOLUTION));
 
 	}
 	//Enable overflow interrupt for timer0
@@ -192,18 +192,18 @@ EN_timerError_t MTIMER0_DelayInterrupt_MS(u32 Copy_u32Delay)
  * The remainder time is stored in the preload value to be loaded into Timer0 registers after the required number of overflows.
  * The function waits for the overflow flag to be set and clears it before returning.
  */
-EN_timerError_t MTIMER0_Delay_MS(u32 Copy_u32Delay)
+EN_timerError_t MTIMER0_Delay_MS(u32 u32_arg_Delay)
 {
 
-	Copy_u32Delay=Copy_u32Delay*1000UL;  // for microsecond unit.
+	u32_arg_Delay=u32_arg_Delay*1000UL;  // for microsecond unit.
 
 	//timer counter
 	u32 Local_counter=0,Local_NO_OVERFLOW=0,Local_PRELOAD=0;
 
-	if (Copy_u32Delay>=GLOBAL_u16TimeOverFlow) {
+	if (u32_arg_Delay>=u16_GLOBAL_TimeOverFlow) {
 
 		//number of overflow needed to required time.
-		Local_NO_OVERFLOW=Copy_u32Delay/GLOBAL_u16TimeOverFlow;
+		Local_NO_OVERFLOW=u32_arg_Delay/u16_GLOBAL_TimeOverFlow;
 
 		while(Local_counter!=Local_NO_OVERFLOW)
 		{
@@ -214,7 +214,7 @@ EN_timerError_t MTIMER0_Delay_MS(u32 Copy_u32Delay)
 			Local_counter++;
 		}
 		//remainder time needed to after number of overflow required time. in  microsecond unit.
-		Local_PRELOAD=(Copy_u32Delay%GLOBAL_u16TimeOverFlow)*(pow(2,TIMER0_RESOLUTION));
+		Local_PRELOAD=(u32_arg_Delay%u16_GLOBAL_TimeOverFlow)*(pow(2,TIMER0_RESOLUTION));
 
 		MTIMER0_TCNT0_REG=Local_PRELOAD;
 
@@ -222,10 +222,10 @@ EN_timerError_t MTIMER0_Delay_MS(u32 Copy_u32Delay)
 		SET_BIT(MTIMER_TIFR_REG,TIMER0_TOV0_BIT);
 		while(GET_BIT(MTIMER_TIFR_REG,TIMER0_TOV0_BIT)==0);
 
-	} else if(Copy_u32Delay<GLOBAL_u16TimeOverFlow)
+	} else if(u32_arg_Delay<u16_GLOBAL_TimeOverFlow)
 	{
 		//remainder required time. in  microsecond unit.
-		Local_PRELOAD=(Copy_u32Delay%GLOBAL_u16TimeOverFlow)*(pow(2,TIMER0_RESOLUTION));
+		Local_PRELOAD=(u32_arg_Delay%u16_GLOBAL_TimeOverFlow)*(pow(2,TIMER0_RESOLUTION));
 		MTIMER0_TCNT0_REG=Local_PRELOAD;
 		// Clear the overflow flag
 		SET_BIT(MTIMER_TIFR_REG,TIMER0_TOV0_BIT);
@@ -245,14 +245,14 @@ EN_timerError_t MTIMER0_Delay_MS(u32 Copy_u32Delay)
  * It sets or clears the necessary bits in the Timer0 Control Register (TCCR0) based on the selected mode and compare output settings.
  * If an invalid mode or compare output option is provided, the function returns a NOT_OK error status.
  */
- EN_timerError_t MTIMER0_CompareOutputMode(u8 Copy_u8Mode,u8 Copy_u8COM)
+ EN_timerError_t MTIMER0_CompareOutputMode(u8 u8_arg_Mode,u8 u8_arg_COM)
  {
-	EN_timerError_t errorStatus = TIMER0_OK;
-	 switch(Copy_u8Mode)
+	EN_timerError_t enum_Local_errorStatus = TIMER0_OK;
+	 switch(u8_arg_Mode)
 	 {
 		case TIMER0_CTC_MODE:
 			//-----------------------" Compare Output Mode with NO PWM " --------------------------
-			switch (Copy_u8COM)
+			switch (u8_arg_COM)
 					{
 					case	TIMER0_COM_NOPWM_OC0_PIN_DISCONNETED:
 							CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
@@ -275,14 +275,14 @@ EN_timerError_t MTIMER0_Delay_MS(u32 Copy_u32Delay)
 							break;
 
 					default:
-						errorStatus = TIMER0_NOT_OK;
+						enum_Local_errorStatus = TIMER0_NOT_OK;
 				}
 			break;
 
 
 		//-----------------------" Compare Output Mode with PHASE CORRECT PWM " --------------------------
 		case TIMER0_PWM_PHASECORRECT_MODE:
-				switch (Copy_u8COM)
+				switch (u8_arg_COM)
 				{
 				case TIMER0_COM_PHASECORRECTPWM_OC0_PIN_DISCONNETED:
 					CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
@@ -300,13 +300,13 @@ EN_timerError_t MTIMER0_Delay_MS(u32 Copy_u32Delay)
 					break;
 
 			  default:
-					errorStatus = TIMER0_NOT_OK;
+					enum_Local_errorStatus = TIMER0_NOT_OK;
 			}
 		break;
 
 		//-----------------------" Compare Output Mode with FAST PWM " --------------------------
 		case TIMER0_FAST_PWM_MODE:
-			switch (Copy_u8COM)
+			switch (u8_arg_COM)
 				{
 					case TIMER0_COM_FASTPWM_OC0_PIN_DISCONNETED:
 						    CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
@@ -324,15 +324,15 @@ EN_timerError_t MTIMER0_Delay_MS(u32 Copy_u32Delay)
 						break;
 
 					default:
-						errorStatus = TIMER0_NOT_OK;
+						enum_Local_errorStatus = TIMER0_NOT_OK;
 				}
 			break;
 
 	    default:
-	        errorStatus = TIMER0_NOT_OK;
+	        enum_Local_errorStatus = TIMER0_NOT_OK;
 	 	}
 		 
-		 return errorStatus;
+		 return enum_Local_errorStatus;
  }
 
 /*
@@ -345,13 +345,13 @@ EN_timerError_t MTIMER0_Delay_MS(u32 Copy_u32Delay)
  */
 u8  MTIMER0_u8CheckOverFlow(void)
 {
-	u8 Local_u8OverFlowFlag=0;
+	u8 u8_Local_OverFlowFlag=0;
 	while(GET_BIT(MTIMER_TIFR_REG, TIMER0_TOV0_BIT)!=1);
-	Local_u8OverFlowFlag=1;
+	u8_Local_OverFlowFlag=1;
 
 	// to clear Timer/Counter0 Overflow Flag
 	SET_BIT(MTIMER_TIFR_REG, TIMER0_TOV0_BIT);
-	 return Local_u8OverFlowFlag;
+	 return u8_Local_OverFlowFlag;
 }
 
 /*
@@ -364,13 +364,13 @@ u8  MTIMER0_u8CheckOverFlow(void)
  */
 u8    MTIMER0_u8CheckCompareMatchMode(void)
 {
-	u8 Local_u8CompareMatchFlag=0;
+	u8 u8_Local_CompareMatchFlag=0;
 	while(GET_BIT(MTIMER_TIFR_REG, TIMER0_OCF0_BIT)!=1);
-		Local_u8CompareMatchFlag=1;
+		u8_Local_CompareMatchFlag=1;
 
 	// to clear Timer/Counter0 CompareMatch Flag
 	SET_BIT(MTIMER_TIFR_REG, TIMER0_OCF0_BIT);
-	 return Local_u8CompareMatchFlag;
+	 return u8_Local_CompareMatchFlag;
 }
 
 
@@ -396,11 +396,11 @@ EN_timerError_t MTIMER0_SetCompareMatchValue(u8 Copy_u8CompareMatchValue)
  * If the duty cycle is within the valid range (0-100), it sets the compare match value by assigning it to the MTIMER0_OCR0_REG register.
  * It returns OK to indicate that the operation was successful.
  */
-EN_timerError_t MTIMER0_PWMDutyCycle(u8 Copy_u8DutyCycle)
+EN_timerError_t MTIMER0_PWMDutyCycle(u8 u8_arg_DutyCycle)
 {
-	if(Copy_u8DutyCycle<=100&&Copy_u8DutyCycle>0)
+	if(u8_arg_DutyCycle<=100&&u8_arg_DutyCycle>0)
 	{
-		u8 local_CompareMatchValue=(Copy_u8DutyCycle*TIMER0_OverFlowValue)/TIMER0_MaxDutyCycle;
+		u8 local_CompareMatchValue=(u8_arg_DutyCycle*TIMER0_OverFlowValue)/TIMER0_MaxDutyCycle;
 
 		MTIMER0_OCR0_REG=local_CompareMatchValue;
 	}
@@ -473,23 +473,23 @@ void __vector_11(void)
 	// to indicate that the  preload needed is done.
 	//static PreLoad_Done=0;
 
-	if((Local_Counter<GLOBAL_TIMER0_NO_OVERFLOW) && NO_OVERFLOW_Done!=1 )
+	if((Local_Counter<u32_GLOBAL_TIMER0_NO_OVERFLOW) && NO_OVERFLOW_Done!=1 )
 	{
 		Local_Counter++;
 	}
-	else if((Local_Counter==GLOBAL_TIMER0_NO_OVERFLOW) && NO_OVERFLOW_Done!=1 )
+	else if((Local_Counter==u32_GLOBAL_TIMER0_NO_OVERFLOW) && NO_OVERFLOW_Done!=1 )
 	{
-		if(GLOBAL_TIMER0_PRELOAD!=0)
+		if(u32_GLOBAL_TIMER0_PRELOAD!=0)
 		{
 			//set preload
-			MTIMER0_TCNT0_REG=GLOBAL_TIMER0_PRELOAD;
+			MTIMER0_TCNT0_REG=u32_GLOBAL_TIMER0_PRELOAD;
 		}
 
 		NO_OVERFLOW_Done=1;
 
 	}
 			//to guard executing ISR for required time
-	else if(NO_OVERFLOW_Done==1&&(GLOBAL_TIMER0_NO_OVERFLOW!=0||GLOBAL_TIMER0_PRELOAD!=0))
+	else if(NO_OVERFLOW_Done==1&&(u32_GLOBAL_TIMER0_NO_OVERFLOW!=0||u32_GLOBAL_TIMER0_PRELOAD!=0))
 	{
 		if (TIMER0_CALL_BACK_REQUIREDTIME!=NULL_PTR)
 		{

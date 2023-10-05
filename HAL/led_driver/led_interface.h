@@ -23,10 +23,10 @@ typedef enum
  *                              Functions Prototypes                           *
  *******************************************************************************/
 
-EN_LEDErrorState_t HLED_Init(u8 Copy_u8Port,u8 Copy_u8Pin);
-EN_LEDErrorState_t HLED_TurnOn(u8 Copy_u8Port,u8 Copy_u8Pin);
-EN_LEDErrorState_t HLED_TurnOFF(u8 Copy_u8Port,u8 Copy_u8Pin);
-EN_LEDErrorState_t HLED_Toggle(u8 Copy_u8Port,u8 Copy_u8Pin);
+EN_LEDErrorState_t HLED_Init(u8 u8_arg_Port,u8 u8_arg_Pin);
+EN_LEDErrorState_t HLED_TurnOn(u8 u8_arg_Port,u8 u8_arg_Pin);
+EN_LEDErrorState_t HLED_TurnOFF(u8 u8_arg_Port,u8 u8_arg_Pin);
+EN_LEDErrorState_t HLED_Toggle(u8 u8_arg_Port,u8 u8_arg_Pin);
 
 
 #endif /* LED_INTERFACE_H_ */
