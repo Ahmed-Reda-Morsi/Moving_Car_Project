@@ -26,13 +26,13 @@
 #include "timer2_config.h"
 #include "timer2_interface.h"
 #include "timer2_private.h"
+
 #include "../../dio/dio_interface.h"
-
 void (*TIMER2_CALL_BACK_OverFlow)(void)=NULL_PTR;
+void (*TIMER2_CALL_BACK_REQUIREDTIME)(void)=NULL_PTR;
 
-static u32 GLOBAL_TIMER2_PRELOAD_ONTIME=0;
-static u32 GLOBAL_TIMER2_PRELOAD_OFFTIME=0;
-
+static u8 GLOBAL_TIMER2_PRELOAD_ONTIME=0;
+static u8 GLOBAL_TIMER2_PRELOAD_OFFTIME=0;
 
 
 /*******************************************************************************
@@ -108,7 +108,6 @@ EN_timer2_Error_t MTIMER2_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
 		break;
 
 		case TIMER2_CS_PRESCALLER_8:
-
 		CLEAR_BIT(MTIMER2_TCCR2_REG, TCCR2_CS20_BIT);
 		SET_BIT(MTIMER2_TCCR2_REG, TCCR2_CS21_BIT);
 		CLEAR_BIT(MTIMER2_TCCR2_REG, TCCR2_CS22_BIT);
@@ -124,7 +123,7 @@ EN_timer2_Error_t MTIMER2_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
 		CLEAR_BIT(MTIMER2_TCCR2_REG, TCCR2_CS20_BIT);
 		CLEAR_BIT(MTIMER2_TCCR2_REG, TCCR2_CS21_BIT);
 		SET_BIT(MTIMER2_TCCR2_REG, TCCR2_CS22_BIT);
-		break;
+			break;
 
 		case TIMER2_CS_PRESCALLER_128:
 		SET_BIT(MTIMER2_TCCR2_REG, TCCR2_CS20_BIT);
@@ -153,15 +152,30 @@ EN_timer2_Error_t MTIMER2_Init(u8 Copy_u8Mode,u8 Copy_u8PreScaler)
 	return errorStatus;
 }
 
+EN_timer2_Error_t MTIMER2_PWM_init(void)
+{
+	EN_timer2_Error_t errorStatus=TIMER2_OK;
+
+	errorStatus= MDIO_SetPinDirection(PWM_NORMAL_MODE_PORT,PWM_NORMAL_MODE_PIN,PIN_OUT);
+	errorStatus= MDIO_SetPinValue(PWM_NORMAL_MODE_PORT,PWM_NORMAL_MODE_PIN,PIN_LOW);
+	if (errorStatus!=TIMER2_OK)
+	{
+		errorStatus=TIMER2_NOT_OK;
+	}
+     return errorStatus;
+
+}
+
 
 EN_timer2_Error_t MTIMER2_SetPWMNormalMode_DutyCycle(u8 u8_Local_DutyCycle)
 {
-	
-	MDIO_SetPinDirection(PWM_NORMAL_MODE_PORT,PWM_NORMAL_MODE_PIN,PIN_OUT);
+	EN_timer2_Error_t errorStatus=TIMER2_OK;
 	if (u8_Local_DutyCycle<100 && u8_Local_DutyCycle>0)
 	{
-		GLOBAL_TIMER2_PRELOAD_ONTIME=(pow(2,TIMER2_RESOLUTION))-((u8_Local_DutyCycle*PWM_NORMAL_MODE_PERIOD)/100);
-	   GLOBAL_TIMER2_PRELOAD_OFFTIME=(pow(2,TIMER2_RESOLUTION))-(((100-u8_Local_DutyCycle)*PWM_NORMAL_MODE_PERIOD)/100);
+		//GLOBAL_TIMER2_PRELOAD_ONTIME=(u8)((pow(2,TIMER2_RESOLUTION)-1)-((u8_Local_DutyCycle*PWM_NORMAL_MODE_PERIOD)/100));
+	    //GLOBAL_TIMER2_PRELOAD_OFFTIME=(u8)((pow(2,TIMER2_RESOLUTION)-1)-(((100-u8_Local_DutyCycle)*PWM_NORMAL_MODE_PERIOD)/100));
+		GLOBAL_TIMER2_PRELOAD_ONTIME=(u8)(TIMER2_OverFlowValue-((u8_Local_DutyCycle*PWM_NORMAL_MODE_PERIOD)/100));
+		GLOBAL_TIMER2_PRELOAD_OFFTIME=(u8)(TIMER2_OverFlowValue-(((100-u8_Local_DutyCycle)*PWM_NORMAL_MODE_PERIOD)/100));
 		MTIMER2_TCNT2_REG=GLOBAL_TIMER2_PRELOAD_ONTIME;
 		//Enable overflow interrupt for timer2
 		SET_BIT(MTIMER_TIMSK_REG,TIMSK_TOIE2_BIT);
@@ -173,10 +187,24 @@ EN_timer2_Error_t MTIMER2_SetPWMNormalMode_DutyCycle(u8 u8_Local_DutyCycle)
 	else if (u8_Local_DutyCycle==0)
 	{
 		MDIO_SetPinValue(PWM_NORMAL_MODE_PORT,PWM_NORMAL_MODE_PIN,PIN_LOW);
+		CLEAR_BIT(MTIMER_TIMSK_REG,TIMSK_TOIE2_BIT);
+
+	}
+	else
+	{
+		errorStatus=TIMER2_NOT_OK;
 	}
 
+	return errorStatus;
+}
+
+EN_timer2_Error_t MTIMER2_SetCallBack_OverFlow(void(*TIMER2_OF_ISR)(void))
+{
+	
+	TIMER2_CALL_BACK_OverFlow=TIMER2_OF_ISR;
 	return TIMER2_OK;
 }
+
 
 
 /*******************************************************************************
@@ -210,12 +238,4 @@ void __vector_5(void)
 	if (TIMER2_CALL_BACK_OverFlow!=NULL_PTR) {
 		TIMER2_CALL_BACK_OverFlow();
 	}
-}
-
-
-EN_timer2_Error_t MTIMER2_SetCallBack_OverFlow(void(*TIMER2_OF_ISR)(void))
-{
-	
-	TIMER2_CALL_BACK_OverFlow=TIMER2_OF_ISR;
-	return TIMER2_OK;
 }

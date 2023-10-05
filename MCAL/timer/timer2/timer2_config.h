@@ -7,11 +7,10 @@
 #define CPU_F				8000000UL
 #define TIMER2_RESOLUTION	8
 
-#define PWM_NORMAL_MODE_PIN       5
-#define PWM_NORMAL_MODE_PORT      2
+#define PWM_NORMAL_MODE_PIN       7
+#define PWM_NORMAL_MODE_PORT      3
 #define PWM_NORMAL_MODE_PERIOD   200
-
-
+#define  TIMER2_OverFlowValue	 255
 //__________________|Timer/Counter Mode of Operations |_____________________
 //TCCR2->   WGM21=0      WGM20 = 0
 #define	TIMER2_NORMAL_MODE											0

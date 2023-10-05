@@ -415,7 +415,7 @@ EN_timerError_t MTIMER0_PWMDutyCycle(u8 Copy_u8DutyCycle)
  * The function assigns the callback function to the TIMER0_CALL_BACK_OverFlow function pointer.
  * It returns OK to indicate that the operation was successful.
  */
-EN_timerError_t MTIMER0_voidSetCallBack_OverFlow(void (*TIMER0_OF_ISR)(void))
+EN_timerError_t MTIMER0_SetCallBack_OverFlow(void (*TIMER0_OF_ISR)(void))
 {
 	TIMER0_CALL_BACK_OverFlow=TIMER0_OF_ISR;
 	//SET_BIT(MTIMER_TIMSK_REG,TIMSK_TOIE0_BIT);
@@ -429,7 +429,7 @@ EN_timerError_t MTIMER0_voidSetCallBack_OverFlow(void (*TIMER0_OF_ISR)(void))
  * The function assigns the callback function to the TIMER0_CALL_BACK_REQUIREDTIME function pointer.
  * It returns OK to indicate that the operation was successful.
  */
-EN_timerError_t MTIMER0_voidSetCallBack_REQUIREDTIME(void (*TIMER0_OF_RT_ISR)(void))
+EN_timerError_t MTIMER0_SetCallBack_REQUIREDTIME(void (*TIMER0_OF_RT_ISR)(void))
 {
 	TIMER0_CALL_BACK_REQUIREDTIME=TIMER0_OF_RT_ISR;
 	//SET_BIT(MTIMER_TIMSK_REG,TIMSK_TOIE0_BIT);
@@ -445,7 +445,7 @@ EN_timerError_t MTIMER0_voidSetCallBack_REQUIREDTIME(void (*TIMER0_OF_RT_ISR)(vo
  * It also enables the compare match interrupt by setting the appropriate bit in the MTIMER_TIMSK_REG register.
  * It returns OK to indicate that the operation was successful.
  */
-EN_timerError_t MTIMER0_voidSetCallBack_CompareMatchValue(void (*TIMER0_CMV_ISR)(void))
+EN_timerError_t MTIMER0_SetCallBack_CompareMatchValue(void (*TIMER0_CMV_ISR)(void))
 {
 	TIMER0_CALL_BACK_CompareMatch=TIMER0_CMV_ISR;
 	SET_BIT(MTIMER_TIMSK_REG,TIMSK_OCIE0_BIT);
@@ -465,7 +465,7 @@ void __vector_10(void)
 // TIMER0 OVF Timer/Counter0 Overflow  Interrupt Vector
 void __vector_11(void) __attribute__((signal));
 void __vector_11(void)
-{
+{ 
 	static u32 Local_Counter=0;
 	 // to indicate that the no. overflow needed is done.
 	static u8  NO_OVERFLOW_Done=0;
@@ -497,7 +497,7 @@ void __vector_11(void)
 			TIMER0_CALL_BACK_REQUIREDTIME();
 
 			//disable overflow interrupt for timer0
-			CLEAR_BIT(MTIMER_TIMSK_REG,TIMSK_TOIE0_BIT);
+			//CLEAR_BIT(MTIMER_TIMSK_REG,TIMSK_TOIE0_BIT);
 		}
 
 		//reset the delay valiable for new time.

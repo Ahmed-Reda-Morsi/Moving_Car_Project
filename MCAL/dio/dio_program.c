@@ -192,7 +192,7 @@ EN_dioError_t MDIO_SetPinValue     (u8 Copy_u8Port,u8 Copy_u8Pin,u8 Copy_u8Value
  * Read and return the value for the required pin, it should be Logic High or Logic Low.
  * If the input port number or pin number are not correct, The function will return Logic Low.
  */
-u8   MDIO_GetPinValue       (u8 Copy_u8Port,u8 Copy_u8Pin)
+u8   MDIO_u8GetPinValue       (u8 Copy_u8Port,u8 Copy_u8Pin)
 {
     u8 Local_u8Data = LOGIC_LOW;
 	/*
@@ -200,7 +200,7 @@ u8   MDIO_GetPinValue       (u8 Copy_u8Port,u8 Copy_u8Pin)
 	 * Or if the input pin number is greater than NUM_OF_PINS_PER_PORT value.
 	 * In this case the input is not valid port/pin number
 	 */
-	if((Copy_u8Port >= NUM_OF_PINS_PER_PORT) || (Copy_u8Pin >= NUM_OF_PORTS))
+	if((Copy_u8Pin >= NUM_OF_PINS_PER_PORT) || (Copy_u8Port >= NUM_OF_PORTS))
 	{
 		/* Do Nothing */
 	}
@@ -335,7 +335,7 @@ EN_dioError_t MDIO_SetPortValue (u8 Copy_u8Port,u8 Copy_u8Value)
 EN_dioError_t MDIO_TogglePinValue (u8 Copy_u8Port,u8 Copy_u8Pin)
 {
 	EN_dioError_t errorStatus = DIO_OK;
-	if((Copy_u8Port >= NUM_OF_PINS_PER_PORT) || (Copy_u8Pin >= NUM_OF_PORTS))
+	if((Copy_u8Pin >= NUM_OF_PINS_PER_PORT) || (Copy_u8Port >= NUM_OF_PORTS))
 	{
 		errorStatus = DIO_NOT_OK;
 	}
@@ -420,7 +420,7 @@ u8 MDIO_GetPortValue (u8 Copy_u8Port)
 EN_dioError_t MDIO_SetPullupResistor (u8 Copy_u8Port,u8 Copy_u8Pin)
 {
     EN_dioError_t errorStatus = DIO_OK;
-	if((Copy_u8Port >= NUM_OF_PINS_PER_PORT) || (Copy_u8Pin >= NUM_OF_PORTS))
+	if((Copy_u8Pin >= NUM_OF_PINS_PER_PORT) || (Copy_u8Port >= NUM_OF_PORTS))
     {
 	    errorStatus = DIO_NOT_OK;
     }
