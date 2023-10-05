@@ -11,7 +11,7 @@
  * Setup the direction of the required pin input/output and return error status.
  * If the input port number or pin number are not correct, The function will not handle the request.
  */
-EN_dioError_t MDIO_SetPinDirection (u8 Copy_u8Port,u8 Copy_u8Pin,u8 Copy_u8Dir)
+EN_dioError_t MDIO_SetPinDirection (u8 u8_arg_portNum,u8 u8_arg_pinNum,u8 u8_arg_pinDir)
 {
     /*
 	 * Check if the input port number is greater than NUM_OF_PINS_PER_PORT value.
@@ -19,83 +19,83 @@ EN_dioError_t MDIO_SetPinDirection (u8 Copy_u8Port,u8 Copy_u8Pin,u8 Copy_u8Dir)
 	 * In this case the input is not valid port/pin number
 	 */
 	
-	EN_dioError_t errorStatus = DIO_OK;
+	EN_dioError_t en_Local_errorStatus = DIO_OK;
 	
-	if (Copy_u8Pin >= NUM_OF_PINS_PER_PORT || Copy_u8Port >= NUM_OF_PORTS)
+	if (u8_arg_pinNum >= NUM_OF_PINS_PER_PORT || u8_arg_portNum >= NUM_OF_PORTS)
     {
-				errorStatus = DIO_NOT_OK;
+				en_Local_errorStatus = DIO_NOT_OK;
     }
 	else
 	{
 				/* Setup the pin direction as required */
-		switch (Copy_u8Port)
+		switch (u8_arg_portNum)
 		{
 			case PORTA:
-			switch (Copy_u8Dir)
+			switch (u8_arg_pinDir)
 			{
 				case PIN_IN :
-				  CLEAR_BIT(MDIO_DDRA,Copy_u8Pin);
+				  CLEAR_BIT(MDIO_DDRA,u8_arg_pinNum);
 				   break;
 				case PIN_OUT:
-				  SET_BIT(MDIO_DDRA,Copy_u8Pin);
+				  SET_BIT(MDIO_DDRA,u8_arg_pinNum);
 				     break;
 				default     : 
-					errorStatus = DIO_NOT_OK;
+					en_Local_errorStatus = DIO_NOT_OK;
 					break;
 			}
 			break;
 			
 			case PORTB:
-			switch (Copy_u8Dir)
+			switch (u8_arg_pinDir)
 			{
 				case PIN_IN :  
-					CLEAR_BIT(MDIO_DDRB,Copy_u8Pin); 
+					CLEAR_BIT(MDIO_DDRB,u8_arg_pinNum); 
 					break;
 				case PIN_OUT:  
-					SET_BIT(MDIO_DDRB,Copy_u8Pin);   
+					SET_BIT(MDIO_DDRB,u8_arg_pinNum);   
 					break;
 				default     : 
-					errorStatus = DIO_NOT_OK;
+					en_Local_errorStatus = DIO_NOT_OK;
 					break;
 			}
 			break;
 
 			case PORTC:
-			switch (Copy_u8Dir)
+			switch (u8_arg_pinDir)
 			{
 				case PIN_IN :  
-					CLEAR_BIT(MDIO_DDRC,Copy_u8Pin); 
+					CLEAR_BIT(MDIO_DDRC,u8_arg_pinNum); 
 					break;
 				case PIN_OUT:  
-					SET_BIT(MDIO_DDRC,Copy_u8Pin);   
+					SET_BIT(MDIO_DDRC,u8_arg_pinNum);   
 					break;
 				default     : 
-					errorStatus = DIO_NOT_OK;
+					en_Local_errorStatus = DIO_NOT_OK;
 					break;
 			}
 			break;
 
 			case PORTD:
-			switch (Copy_u8Dir)
+			switch (u8_arg_pinDir)
 			{
 				case PIN_IN :  
-					CLEAR_BIT(MDIO_DDRD,Copy_u8Pin); 
+					CLEAR_BIT(MDIO_DDRD,u8_arg_pinNum); 
 					break;
 				case PIN_OUT:  
-					SET_BIT(MDIO_DDRD,Copy_u8Pin);   
+					SET_BIT(MDIO_DDRD,u8_arg_pinNum);   
 					break;
 				default     : 
-					errorStatus = DIO_NOT_OK;
+					en_Local_errorStatus = DIO_NOT_OK;
 					break;
 			}
 			break;
 
 			default:
-				errorStatus = DIO_NOT_OK;
+				en_Local_errorStatus = DIO_NOT_OK;
 				break;
 		}
 	}
-	return errorStatus;
+	return en_Local_errorStatus;
 }
 /*
  * Description :
@@ -103,88 +103,88 @@ EN_dioError_t MDIO_SetPinDirection (u8 Copy_u8Port,u8 Copy_u8Pin,u8 Copy_u8Dir)
  * If the input port number or pin number are not correct, The function will not handle the request.
  * If the pin is input, this function will enable/disable the internal pull-up resistor.
  */
-EN_dioError_t MDIO_SetPinValue     (u8 Copy_u8Port,u8 Copy_u8Pin,u8 Copy_u8Value)
+EN_dioError_t MDIO_SetPinValue     (u8 u8_arg_portNum,u8 u8_arg_pinNum,u8 u8_arg_value)
 {   
     /*
 	 * Check if the input port number is greater than NUM_OF_PINS_PER_PORT value.
 	 * Or if the input pin number is greater than NUM_OF_PINS_PER_PORT value.
 	 * In this case the input is not valid port/pin number
 	 */
-	EN_dioError_t errorStatus = DIO_OK;
-	if (Copy_u8Pin >= NUM_OF_PINS_PER_PORT || Copy_u8Port >= NUM_OF_PORTS)
+	EN_dioError_t en_Local_errorStatus = DIO_OK;
+	if (u8_arg_pinNum >= NUM_OF_PINS_PER_PORT || u8_arg_portNum >= NUM_OF_PORTS)
     {
-						errorStatus = DIO_NOT_OK;
+						en_Local_errorStatus = DIO_NOT_OK;
     } 
     else
     {
-		switch (Copy_u8Port)
+		switch (u8_arg_portNum)
 		{
 			case PORTA:
-			switch (Copy_u8Value)
+			switch (u8_arg_value)
 			{
 				case PIN_LOW :  
-					CLEAR_BIT(MDIO_PORTA,Copy_u8Pin); 
+					CLEAR_BIT(MDIO_PORTA,u8_arg_pinNum); 
 					break;
 				case PIN_HIGH:  
-					SET_BIT(MDIO_PORTA,Copy_u8Pin);   
+					SET_BIT(MDIO_PORTA,u8_arg_pinNum);   
 					break;
 				default      : 
-					errorStatus = DIO_NOT_OK;
+					en_Local_errorStatus = DIO_NOT_OK;
 					break;
 			}
 			break;
 			
 			case PORTB:
-			switch (Copy_u8Value)
+			switch (u8_arg_value)
 			{
 				case PIN_LOW :  
-					CLEAR_BIT(MDIO_PORTB,Copy_u8Pin); 
+					CLEAR_BIT(MDIO_PORTB,u8_arg_pinNum); 
 					break;
 				case PIN_HIGH:  
-					SET_BIT(MDIO_PORTB,Copy_u8Pin);   
+					SET_BIT(MDIO_PORTB,u8_arg_pinNum);   
 					break;
 				default      : 
-					errorStatus = DIO_NOT_OK;
+					en_Local_errorStatus = DIO_NOT_OK;
 					break;
 			}
 			break;
 
 			case PORTC:
-			switch (Copy_u8Value)
+			switch (u8_arg_value)
 			{
 				case PIN_LOW :  
-					CLEAR_BIT(MDIO_PORTC,Copy_u8Pin); 
+					CLEAR_BIT(MDIO_PORTC,u8_arg_pinNum); 
 					break;
 				case PIN_HIGH:  
-					SET_BIT(MDIO_PORTC,Copy_u8Pin);   
+					SET_BIT(MDIO_PORTC,u8_arg_pinNum);   
 					break;
 				default      : 
-					errorStatus = DIO_NOT_OK;
+					en_Local_errorStatus = DIO_NOT_OK;
 					break;
 			}
 			break;
 
 			case PORTD:
-			switch (Copy_u8Value)
+			switch (u8_arg_value)
 			{
 				case PIN_LOW :  
-					CLEAR_BIT(MDIO_PORTD,Copy_u8Pin); 
+					CLEAR_BIT(MDIO_PORTD,u8_arg_pinNum); 
 					break;
 				case PIN_HIGH:  
-					SET_BIT(MDIO_PORTD,Copy_u8Pin);   
+					SET_BIT(MDIO_PORTD,u8_arg_pinNum);   
 					break;
 				default      : 
-					errorStatus = DIO_NOT_OK;
+					en_Local_errorStatus = DIO_NOT_OK;
 					break;
 			}
 			break;
 
 			default:
-				errorStatus = DIO_NOT_OK;
+				en_Local_errorStatus = DIO_NOT_OK;
 				break;
 		}
     }
-	return errorStatus;
+	return en_Local_errorStatus;
 	
 }
 /*
@@ -192,44 +192,44 @@ EN_dioError_t MDIO_SetPinValue     (u8 Copy_u8Port,u8 Copy_u8Pin,u8 Copy_u8Value
  * Read and return the value for the required pin, it should be Logic High or Logic Low.
  * If the input port number or pin number are not correct, The function will return Logic Low.
  */
-u8   MDIO_GetPinValue       (u8 Copy_u8Port,u8 Copy_u8Pin)
+u8   MDIO_GetPinValue       (u8 u8_arg_portNum,u8 u8_arg_pinNum)
 {
-    u8 Local_u8Data = LOGIC_LOW;
+    u8 u8_Local_value = LOGIC_LOW;
 	/*
 	 * Check if the input port number is greater than NUM_OF_PINS_PER_PORT value.
 	 * Or if the input pin number is greater than NUM_OF_PINS_PER_PORT value.
 	 * In this case the input is not valid port/pin number
 	 */
-	if((Copy_u8Port >= NUM_OF_PINS_PER_PORT) || (Copy_u8Pin >= NUM_OF_PORTS))
+	if((u8_arg_pinNum >= NUM_OF_PINS_PER_PORT) || (u8_arg_portNum >= NUM_OF_PORTS))
 	{
 		/* Do Nothing */
 	}
 	else
 	{
 				/* Read the pin value as required */
-		switch (Copy_u8Port)
+		switch (u8_arg_portNum)
 		{
 		case PORTA:
-			Local_u8Data=GET_BIT(MDIO_PINA,Copy_u8Pin);
+			u8_Local_value=GET_BIT(MDIO_PINA,u8_arg_pinNum);
 			break; 
     
 		case PORTB:
-			Local_u8Data=GET_BIT(MDIO_PINB,Copy_u8Pin);
+			u8_Local_value=GET_BIT(MDIO_PINB,u8_arg_pinNum);
 			break; 
 
 		case PORTC:
-			Local_u8Data=GET_BIT(MDIO_PINC,Copy_u8Pin);
+			u8_Local_value=GET_BIT(MDIO_PINC,u8_arg_pinNum);
 			break;
 
 		case PORTD:
-			Local_u8Data=GET_BIT(MDIO_PIND,Copy_u8Pin);
+			u8_Local_value=GET_BIT(MDIO_PIND,u8_arg_pinNum);
 			break;
 
 		default:
 			break;
 		}
 	}
-    return Local_u8Data;
+    return u8_Local_value;
 } 
 
 /*
@@ -239,44 +239,44 @@ u8   MDIO_GetPinValue       (u8 Copy_u8Port,u8 Copy_u8Pin)
  * If the direction value is PORT_OUTPUT all pins in this port should be output pins.
  * If the input port number is not correct, The function will not handle the request.
  */
-EN_dioError_t MDIO_SetPortDirection (u8 Copy_u8Port,u8 Copy_u8Dir)
+EN_dioError_t MDIO_SetPortDirection (u8 u8_arg_portNum,u8 u8_arg_portDir)
 {
     /*
 	 * Check if the input number is greater than NUM_OF_PORTS value.
 	 * In this case the input is not valid port number
 	 */
-	EN_dioError_t errorStatus = DIO_OK;
-	if(Copy_u8Port >= NUM_OF_PORTS)
+	EN_dioError_t en_Local_errorStatus = DIO_OK;
+	if(u8_arg_portNum >= NUM_OF_PORTS)
 	{
-		errorStatus = DIO_NOT_OK;
+		en_Local_errorStatus = DIO_NOT_OK;
 	}
 	else
 	{
 				/* Setup the port direction as required */
-		switch (Copy_u8Port)
+		switch (u8_arg_portNum)
 		{
 			case PORTA:  
-				MDIO_DDRA = Copy_u8Dir;
+				MDIO_DDRA = u8_arg_portDir;
 				break;
 			
 			case PORTB:  
-				MDIO_DDRB = Copy_u8Dir; 
+				MDIO_DDRB = u8_arg_portDir; 
 				break;
 
 			case PORTC:  
-				MDIO_DDRC = Copy_u8Dir; 
+				MDIO_DDRC = u8_arg_portDir; 
 				break;
 
 			case PORTD:  
-				MDIO_DDRD = Copy_u8Dir; 
+				MDIO_DDRD = u8_arg_portDir; 
 				break;
 
 			default:
-				errorStatus = DIO_NOT_OK;
+				en_Local_errorStatus = DIO_NOT_OK;
 				break;
 		}	
 	}
-	return errorStatus;
+	return en_Local_errorStatus;
 	
 }
 /*
@@ -286,44 +286,44 @@ EN_dioError_t MDIO_SetPortDirection (u8 Copy_u8Port,u8 Copy_u8Dir)
  * If any pin in the port is input pin this will activate/deactivate the internal pull-up resistor.
  * If the input port number is not correct, The function will not handle the request.
  */
-EN_dioError_t MDIO_SetPortValue (u8 Copy_u8Port,u8 Copy_u8Value)
+EN_dioError_t MDIO_SetPortValue (u8 u8_arg_portNum,u8 u8_arg_value)
 {
 	/*
 	 * Check if the input number is greater than NUM_OF_PORTS value.
 	 * In this case the input is not valid port number
 	 */
-	EN_dioError_t errorStatus = DIO_OK;
-	if(Copy_u8Port >= NUM_OF_PORTS)
+	EN_dioError_t en_Local_errorStatus = DIO_OK;
+	if(u8_arg_portNum >= NUM_OF_PORTS)
 	{
-		errorStatus = DIO_NOT_OK;
+		en_Local_errorStatus = DIO_NOT_OK;
 	}
 	else
 	{
 				/* Write the port value as required */
-		switch (Copy_u8Port)
+		switch (u8_arg_portNum)
 		{
 		case PORTA:   
-			MDIO_PORTA = Copy_u8Value; 
+			MDIO_PORTA = u8_arg_value; 
 			break;
 
 		case PORTB:  
-			MDIO_PORTB = Copy_u8Value; 
+			MDIO_PORTB = u8_arg_value; 
 			break;
 
 		case PORTC:  
-			MDIO_PORTC = Copy_u8Value; 
+			MDIO_PORTC = u8_arg_value; 
 			break;
 
 		case PORTD:  
-			MDIO_PORTD = Copy_u8Value; 
+			MDIO_PORTD = u8_arg_value; 
 			break;
 
 		default:
-			errorStatus = DIO_NOT_OK;
+			en_Local_errorStatus = DIO_NOT_OK;
 			break;
 		}
 	}
-	return errorStatus;
+	return en_Local_errorStatus;
 }
 /*
  * Description :
@@ -332,40 +332,40 @@ EN_dioError_t MDIO_SetPortValue (u8 Copy_u8Port,u8 Copy_u8Value)
  * If the output is high, The function will toggle it to low.
  * If the output is low, The function will toggle it to high.
  */
-EN_dioError_t MDIO_TogglePinValue (u8 Copy_u8Port,u8 Copy_u8Pin)
+EN_dioError_t MDIO_TogglePinValue (u8 u8_arg_portNum,u8 u8_arg_pinNum)
 {
-	EN_dioError_t errorStatus = DIO_OK;
-	if((Copy_u8Port >= NUM_OF_PINS_PER_PORT) || (Copy_u8Pin >= NUM_OF_PORTS))
+	EN_dioError_t en_Local_errorStatus = DIO_OK;
+	if((u8_arg_pinNum >= NUM_OF_PINS_PER_PORT) || (u8_arg_portNum >= NUM_OF_PORTS))
 	{
-		errorStatus = DIO_NOT_OK;
+		en_Local_errorStatus = DIO_NOT_OK;
 	}
 	else
 	{
 		/* Toggle the Pin value as required */
-		switch (Copy_u8Port)
+		switch (u8_arg_portNum)
 		{
 			case PORTA:
-			TOGGLE_BIT(MDIO_PORTA,Copy_u8Pin);
+			TOGGLE_BIT(MDIO_PORTA,u8_arg_pinNum);
 			break;
 
 			case PORTB:
-			TOGGLE_BIT(MDIO_PORTB,Copy_u8Pin);
+			TOGGLE_BIT(MDIO_PORTB,u8_arg_pinNum);
 			break;
 
 			case PORTC:
-			TOGGLE_BIT(MDIO_PORTC,Copy_u8Pin);
+			TOGGLE_BIT(MDIO_PORTC,u8_arg_pinNum);
 			break;
 
 			case PORTD:
-			TOGGLE_BIT(MDIO_PORTD,Copy_u8Pin);
+			TOGGLE_BIT(MDIO_PORTD,u8_arg_pinNum);
 			break;
 
 			default:
-			errorStatus = DIO_NOT_OK;
+			en_Local_errorStatus = DIO_NOT_OK;
 			break;
 		}
 	}
-	return errorStatus;
+	return en_Local_errorStatus;
 	
 }
 /*
@@ -373,21 +373,21 @@ EN_dioError_t MDIO_TogglePinValue (u8 Copy_u8Port,u8 Copy_u8Pin)
  * Read and return the value of the required port.
  * If the input port number is not correct, The function will return ZERO value.
  */
-u8 MDIO_GetPortValue (u8 Copy_u8Port)
+u8 MDIO_GetPortValue (u8 u8_arg_portNum)
 {
     u8 Local_u8Data = LOGIC_LOW;
 	/*
 	 * Check if the input number is greater than NUM_OF_PORTS value.
 	 * In this case the input is not valid port number
 	 */
-	if(Copy_u8Port >= NUM_OF_PORTS)
+	if(u8_arg_portNum >= NUM_OF_PORTS)
 	{
 		/* Do Nothing */
 	}
 	else
 	{
 				/* Read the port value as required */
-		switch (Copy_u8Port)
+		switch (u8_arg_portNum)
 		{
 		case PORTA: 
 			Local_u8Data = MDIO_PINA; 
@@ -417,46 +417,46 @@ u8 MDIO_GetPortValue (u8 Copy_u8Port)
  * Setup the Pull-up Resistor and return error status.
  * If the input port number or pin number are not correct, The function will not handle the request.
  */
-EN_dioError_t MDIO_SetPullupResistor (u8 Copy_u8Port,u8 Copy_u8Pin)
+EN_dioError_t MDIO_SetPullupResistor (u8 u8_arg_portNum,u8 u8_arg_pinNum)
 {
-    EN_dioError_t errorStatus = DIO_OK;
-	if((Copy_u8Port >= NUM_OF_PINS_PER_PORT) || (Copy_u8Pin >= NUM_OF_PORTS))
+    EN_dioError_t en_Local_errorStatus = DIO_OK;
+	if((u8_arg_pinNum >= NUM_OF_PINS_PER_PORT) || (u8_arg_portNum >= NUM_OF_PORTS))
     {
-	    errorStatus = DIO_NOT_OK;
+	    en_Local_errorStatus = DIO_NOT_OK;
     }
 	else
 	{
-		switch (Copy_u8Port)
+		switch (u8_arg_portNum)
 		{
 		case PORTA: 
-			if (((MDIO_DDRA>>Copy_u8Pin)&0x01)==0)
+			if (((MDIO_DDRA>>u8_arg_pinNum)&0x01)==0)
 				{
-					SET_BIT(MDIO_PORTA,Copy_u8Pin);
+					SET_BIT(MDIO_PORTA,u8_arg_pinNum);
 				}
 			break;
 
 		case PORTB:
-			if (((MDIO_DDRB>>Copy_u8Pin)&0x01)==0)
+			if (((MDIO_DDRB>>u8_arg_pinNum)&0x01)==0)
 				{
-					SET_BIT(MDIO_PORTB,Copy_u8Pin);
+					SET_BIT(MDIO_PORTB,u8_arg_pinNum);
 				}
 			break;
 		case PORTC:
-			if (((MDIO_DDRC>>Copy_u8Pin)&0x01)==0)
+			if (((MDIO_DDRC>>u8_arg_pinNum)&0x01)==0)
 				{
-					SET_BIT(MDIO_PORTC,Copy_u8Pin);
+					SET_BIT(MDIO_PORTC,u8_Local_pinNum);
 				}
 			break;
 		case PORTD:
-			if (((MDIO_DDRD>>Copy_u8Pin)&0x01)==0)
+			if (((MDIO_DDRD>>u8_arg_pinNum)&0x01)==0)
 				{
-					SET_BIT(MDIO_PORTD,Copy_u8Pin);
+					SET_BIT(MDIO_PORTD,u8_arg_pinNum);
 				}
 			break;
 		default:
-			errorStatus = DIO_NOT_OK;
+			en_Local_errorStatus = DIO_NOT_OK;
 			break;
 		}
 	}
-	return errorStatus;
+	return en_Local_errorStatus;
 }
