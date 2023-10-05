@@ -11,6 +11,7 @@
 #define PWM_NORMAL_MODE_PORT      2
 #define PWM_NORMAL_MODE_PERIOD   200
 
+
 //__________________|Timer/Counter Mode of Operations |_____________________
 //TCCR2->   WGM21=0      WGM20 = 0
 #define	TIMER2_NORMAL_MODE											0
