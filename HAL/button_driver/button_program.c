@@ -1,9 +1,4 @@
-/**************************************************************************/
-/*Author            : Ahmed Reda Morsi                                    */
-/*Version           : V1.0.0                                              */
-/*Date              : 28 April 2023                                       */
-/*Description       :button_program.h                                   */
-/**************************************************************************/
+
 #include "../../LIB/STD_TYPES.h"
 #include "../../MCAL/exti/exti_interface.h"
 #include "../../MCAL/exti/exti_config.h"

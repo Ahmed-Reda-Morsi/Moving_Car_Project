@@ -180,7 +180,7 @@ EN_timerError_t MTIMER0_DelayInterrupt_MS(u32 u32_arg_Delay)
 EN_timerError_t MTIMER0_SetCallBack_REQUIREDTIME(void (*TIMER0_OF_RT_ISR)(void))
 {
 	TIMER0_CALL_BACK_REQUIREDTIME=TIMER0_OF_RT_ISR;
-	//SET_BIT(MTIMER_TIMSK_REG,TIMSK_TOIE0_BIT);
+	
 	return TIMER0_OK;
 }
 
@@ -193,9 +193,6 @@ void __vector_11(void)
 	static u32 Local_Counter=0;
 	 // to indicate that the no. overflow needed is done.
 	static u8  NO_OVERFLOW_Done=0;
-
-	// to indicate that the  preload needed is done.
-	//static PreLoad_Done=0;
 
 	if((Local_Counter<u32_GLOBAL_TIMER0_NO_OVERFLOW) && NO_OVERFLOW_Done!=1 )
 	{
@@ -220,8 +217,6 @@ void __vector_11(void)
 			//REQUIRED TIME time ISR Calling
 			TIMER0_CALL_BACK_REQUIREDTIME();
 
-			//disable overflow interrupt for timer0
-			//CLEAR_BIT(MTIMER_TIMSK_REG,TIMSK_TOIE0_BIT);
 		}
 
 		//reset the delay valiable for new time.

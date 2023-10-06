@@ -162,8 +162,6 @@ EN_timer2_Error_t MTIMER2_SetPWMNormalMode_DutyCycle(u8 u8_arg_DutyCycle)
 	EN_timer2_Error_t enum_Local_errorStatus=TIMER2_OK;
 	if (u8_arg_DutyCycle<100 && u8_arg_DutyCycle>0)
 	{
-		//GLOBAL_TIMER2_PRELOAD_ONTIME=(u8)((pow(2,TIMER2_RESOLUTION)-1)-((u8_Local_DutyCycle*PWM_NORMAL_MODE_PERIOD)/100));
-	    //GLOBAL_TIMER2_PRELOAD_OFFTIME=(u8)((pow(2,TIMER2_RESOLUTION)-1)-(((100-u8_Local_DutyCycle)*PWM_NORMAL_MODE_PERIOD)/100));
 		u8_GLOBAL_TIMER2_PRELOAD_ONTIME=(u8)(TIMER2_OverFlowValue-((u8_arg_DutyCycle*PWM_NORMAL_MODE_PERIOD)/100));
 		u8_GLOBAL_TIMER2_PRELOAD_OFFTIME=(u8)(TIMER2_OverFlowValue-(((100-u8_arg_DutyCycle)*PWM_NORMAL_MODE_PERIOD)/100));
 		MTIMER2_TCNT2_REG=u8_GLOBAL_TIMER2_PRELOAD_ONTIME;
