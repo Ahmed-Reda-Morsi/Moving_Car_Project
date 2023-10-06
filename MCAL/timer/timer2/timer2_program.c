@@ -1,18 +1,18 @@
 /*******************************************************************************
- *                               standard LIBS                                  *
+ *                              REQUIRED INCLUDES                              *
  *******************************************************************************/
 #include "../../../LIB/STD_TYPES.h"
-#include "../../../LIB/BIT_MATH.h"
-#include <math.h>
+
+#include "../../dio/dio_interface.h"
 
 #include "timer2_config.h"
 #include "timer2_interface.h"
 #include "timer2_private.h"
 
-#include "../../dio/dio_interface.h"
-void (*TIMER2_CALL_BACK_OverFlow)(void)=NULL_PTR;
-void (*TIMER2_CALL_BACK_REQUIREDTIME)(void)=NULL_PTR;
 
+/*******************************************************************************
+ *                              REQUIRED Variables                             *
+ *******************************************************************************/
 static u8 u8_GLOBAL_TIMER2_PRELOAD_ONTIME=0;
 static u8 u8_GLOBAL_TIMER2_PRELOAD_OFFTIME=0;
 
@@ -24,8 +24,8 @@ static u8 u8_GLOBAL_TIMER2_PRELOAD_OFFTIME=0;
 /*
  * Description:
  * This function is used to initialize Timer2 with the specified mode and prescaler.
- * It takes two parameters: Copy_u8Mode: The desired mode of Timer2. This can be either
- * normal mode or PWM mode. Copy_u8PreScaler: The desired prescaler value to set the timer's 
+ * It takes two parameters: u8_arg_Mode: The desired mode of Timer2. This can be either
+ * normal mode or PWM mode. u8_arg_PreScaler: The desired prescaler value to set the timer's 
  * clock frequency.
  */
 
@@ -128,14 +128,13 @@ EN_timer2_Error_t MTIMER2_Init(u8 u8_arg_Mode,u8 u8_arg_PreScaler)
 	
 	return enum_Local_errorStatus;
 }
+
 /*
  * Description:
  * This function is used to initialize Timer2 in PWM mode. It configures the necessary settings
  * to enable PWM generation using Timer2. The function returns an EN_timer2_Error_t enumeration 
  * indicating whether the PWM initialization was successful or if there was an error.
  */
-
-
 EN_timer2_Error_t MTIMER2_PWM_init(void)
 {
 	EN_timer2_Error_t enum_Local_errorStatus=TIMER2_OK;
@@ -154,7 +153,7 @@ EN_timer2_Error_t MTIMER2_PWM_init(void)
 /*
  * Description:
  * This function is used to set the duty cycle for the PWM signal when Timer2 is operating in normal mode.
- * It takes one parameter: u8_Local_DutyCycle: The desired duty cycle for the PWM signal represented as a 
+ * It takes one parameter: u8_arg_DutyCycle: The desired duty cycle for the PWM signal represented as a 
  * value from 0 to 100.
  */
 
@@ -191,26 +190,8 @@ EN_timer2_Error_t MTIMER2_SetPWMNormalMode_DutyCycle(u8 u8_arg_DutyCycle)
 
 
 /*******************************************************************************
- *                   Callback Function Setup                                   *
+ *                     Overflow  Interrupt Vector Definition                   *
  *******************************************************************************/
-
-/*
- * Description:
- * This function is used to set a callback function to be executed when an overflow occurs in Timer2.
- * It takes one parameter: TIMER2_OF_ISR: A function pointer to the callback function that will be executed
- * when the overflow interrupt occurs
- */
-
-EN_timer2_Error_t MTIMER2_SetCallBack_OverFlow(void(*TIMER2_OF_ISR)(void))
-{
-	
-	TIMER2_CALL_BACK_OverFlow=TIMER2_OF_ISR;
-	return TIMER2_OK;
-}
-
-
-
-
 // TIMER2 OVF Timer/Counter2 Overflow  Interrupt Vector
 void __vector_5(void) __attribute__((signal));
 void __vector_5(void)
@@ -218,21 +199,18 @@ void __vector_5(void)
 	
 	static u8 u8_Local_Counter=0;
 	if (u8_Local_Counter==0)
-	{
+	{  
+		//SET ONTIME PERIOD
 		MDIO_TogglePinValue(PWM_NORMAL_MODE_PORT,PWM_NORMAL_MODE_PIN);
 		MTIMER2_TCNT2_REG=u8_GLOBAL_TIMER2_PRELOAD_ONTIME;
 	   u8_Local_Counter++;
 	}
 	else if (u8_Local_Counter==1)
 	{
+		//SET OFFTIME PERIOD
 	    MDIO_TogglePinValue(PWM_NORMAL_MODE_PORT,PWM_NORMAL_MODE_PIN);
 		MTIMER2_TCNT2_REG=u8_GLOBAL_TIMER2_PRELOAD_OFFTIME;
 		u8_Local_Counter=0;
 	}
 	
-	
-	
-	if (TIMER2_CALL_BACK_OverFlow!=NULL_PTR) {
-		TIMER2_CALL_BACK_OverFlow();
-	}
 }

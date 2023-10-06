@@ -6,7 +6,7 @@
 /**************************************************************************/
 #ifndef BUTTON_INTERFACE_H_
 #define BUTTON_INTERFACE_H_
-
+#include "../../LIB/STD_TYPES.h"
 /*******************************************************************************
  *                               Types Declaration                             *
  *******************************************************************************/
@@ -25,4 +25,5 @@ typedef enum
  *******************************************************************************/
 EN_buttonState_t HBTTN_SetButtonPressedCallBack(void (*ptr_arg_pFunctionISR_INT_N)(void), EN_extiNumber_t enum_arg_EXTI_Number);
 
+EN_buttonState_t HBTTN_IsButtonPressed(u8 u8_Arg_PortNumber ,  u8 u8_Arg_binNumber);
 #endif /* BUTTON_INTERFACE_H_ */

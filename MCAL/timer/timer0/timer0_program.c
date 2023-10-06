@@ -2,14 +2,12 @@
 #include "../../../LIB/BIT_MATH.h"
 #include <math.h>
 
-//#include "../GIE/GIE_int.h"
+
 #include "timer0_config.h"
 #include "timer0_interface.h"
 #include "timer0_private.h"
 
-void (*TIMER0_CALL_BACK_OverFlow)(void)=NULL_PTR;
 void (*TIMER0_CALL_BACK_REQUIREDTIME)(void)=NULL_PTR;
-void (*TIMER0_CALL_BACK_CompareMatch)(void)=NULL_PTR;
 
 /*******************************************************************************
  *                               Static-Variables                              *
@@ -140,18 +138,7 @@ EN_timerError_t MTIMER0_Init(u8 u8_arg_Mode,u8 u8_arg_PreScaler)
 
 /*
  * Description:
- * This function sets the preload and returns error status.
- */
-EN_timerError_t MTIMER0_SetPreLoad(u16 u16_arg_PreLoad)
-{
-	MTIMER0_OCR0_REG=u16_arg_PreLoad;
-	return TIMER0_OK;
-}
-
-
-/*
- * Description:
- * This function is used to delay the program execution for a specified amount of time using Timer0 interrupts.
+ * This function is used to interrupt the program execution for a specified amount of time using Timer0 interrupts.
  * The delay time is provided in milliseconds and converted to microseconds.
  * The function calculates the number of Timer0 overflow cycles required to achieve the desired delay time.
  * If the delay time exceeds the maximum overflow time of Timer0, the function splits the delay into multiple overflow cycles.
@@ -184,245 +171,6 @@ EN_timerError_t MTIMER0_DelayInterrupt_MS(u32 u32_arg_Delay)
 
 
 /*
- * Description:
- * This function is used to delay the program execution for a specified amount of time using Timer0 without interrupts.
- * The delay time is provided in milliseconds and converted to microseconds.
- * The function calculates the number of Timer0 overflow cycles required to achieve the desired delay time.
- * If the delay time exceeds the maximum overflow time of Timer0, the function performs multiple overflow cycles using a loop.
- * The remainder time is stored in the preload value to be loaded into Timer0 registers after the required number of overflows.
- * The function waits for the overflow flag to be set and clears it before returning.
- */
-EN_timerError_t MTIMER0_Delay_MS(u32 u32_arg_Delay)
-{
-
-	u32_arg_Delay=u32_arg_Delay*1000UL;  // for microsecond unit.
-
-	//timer counter
-	u32 Local_counter=0,Local_NO_OVERFLOW=0,Local_PRELOAD=0;
-
-	if (u32_arg_Delay>=u16_GLOBAL_TimeOverFlow) {
-
-		//number of overflow needed to required time.
-		Local_NO_OVERFLOW=u32_arg_Delay/u16_GLOBAL_TimeOverFlow;
-
-		while(Local_counter!=Local_NO_OVERFLOW)
-		{
-			 // Clear the overflow flag
-			SET_BIT(MTIMER_TIFR_REG,TIMER0_TOV0_BIT);
-			while(GET_BIT(MTIMER_TIFR_REG,TIMER0_TOV0_BIT)==0);
-
-			Local_counter++;
-		}
-		//remainder time needed to after number of overflow required time. in  microsecond unit.
-		Local_PRELOAD=(u32_arg_Delay%u16_GLOBAL_TimeOverFlow)*(pow(2,TIMER0_RESOLUTION));
-
-		MTIMER0_TCNT0_REG=Local_PRELOAD;
-
-		// Clear the overflow flag
-		SET_BIT(MTIMER_TIFR_REG,TIMER0_TOV0_BIT);
-		while(GET_BIT(MTIMER_TIFR_REG,TIMER0_TOV0_BIT)==0);
-
-	} else if(u32_arg_Delay<u16_GLOBAL_TimeOverFlow)
-	{
-		//remainder required time. in  microsecond unit.
-		Local_PRELOAD=(u32_arg_Delay%u16_GLOBAL_TimeOverFlow)*(pow(2,TIMER0_RESOLUTION));
-		MTIMER0_TCNT0_REG=Local_PRELOAD;
-		// Clear the overflow flag
-		SET_BIT(MTIMER_TIFR_REG,TIMER0_TOV0_BIT);
-		while(GET_BIT(MTIMER_TIFR_REG,TIMER0_TOV0_BIT)==0);
-	}
-
-	return TIMER0_OK;
-}
-
-
-
-/*
- * Description:
- * This function is used to configure the compare output mode of Timer0 based on the selected mode and compare output settings.
- * The function takes two parameters: Copy_u8Mode for the Timer0 mode and Copy_u8COM for the compare output settings.
- * The function uses nested switch statements to handle different modes and compare output options.
- * It sets or clears the necessary bits in the Timer0 Control Register (TCCR0) based on the selected mode and compare output settings.
- * If an invalid mode or compare output option is provided, the function returns a NOT_OK error status.
- */
- EN_timerError_t MTIMER0_CompareOutputMode(u8 u8_arg_Mode,u8 u8_arg_COM)
- {
-	EN_timerError_t enum_Local_errorStatus = TIMER0_OK;
-	 switch(u8_arg_Mode)
-	 {
-		case TIMER0_CTC_MODE:
-			//-----------------------" Compare Output Mode with NO PWM " --------------------------
-			switch (u8_arg_COM)
-					{
-					case	TIMER0_COM_NOPWM_OC0_PIN_DISCONNETED:
-							CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
-							CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM01_BIT);
-							break;
-
-					case	TIMER0_COM_NOPWM_OC0_PIN_TOGGLE:
-							SET_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
-							CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM01_BIT);
-							break;
-
-					case	TIMER0_COM_NOPWM_OC0_PIN_CLEAR:
-							CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
-							SET_BIT(MTIMER0_TCCR0_REG,TCCR0_COM01_BIT);
-							break;
-
-					case TIMER0_COM_NOPWM_OC0_PIN_SET:
-							SET_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
-							SET_BIT(MTIMER0_TCCR0_REG,TCCR0_COM01_BIT);
-							break;
-
-					default:
-						enum_Local_errorStatus = TIMER0_NOT_OK;
-				}
-			break;
-
-
-		//-----------------------" Compare Output Mode with PHASE CORRECT PWM " --------------------------
-		case TIMER0_PWM_PHASECORRECT_MODE:
-				switch (u8_arg_COM)
-				{
-				case TIMER0_COM_PHASECORRECTPWM_OC0_PIN_DISCONNETED:
-					CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
-					CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM01_BIT);
-					break;
-
-				case TIMER0_COM_PHASECORRECTPWM_OC0_PIN_CLEAR_COUNTUP:
-					CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
-					SET_BIT(MTIMER0_TCCR0_REG,TCCR0_COM01_BIT);
-					 break;
-
-				case TIMER0_COM_PHASECORRECTPWM_OC0_PIN_SET_COUNTUP:
-					SET_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
-					SET_BIT(MTIMER0_TCCR0_REG,TCCR0_COM01_BIT);
-					break;
-
-			  default:
-					enum_Local_errorStatus = TIMER0_NOT_OK;
-			}
-		break;
-
-		//-----------------------" Compare Output Mode with FAST PWM " --------------------------
-		case TIMER0_FAST_PWM_MODE:
-			switch (u8_arg_COM)
-				{
-					case TIMER0_COM_FASTPWM_OC0_PIN_DISCONNETED:
-						    CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
-						    CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM01_BIT);
-						    break;
-
-					case TIMER0_COM_FASTPWM_OC0_PIN_CLEAR:
-						    CLEAR_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
-						    SET_BIT(MTIMER0_TCCR0_REG,TCCR0_COM01_BIT);
-						    break;
-
-					case TIMER0_COM_FASTPWM_OC0_PIN_SET:
-						    SET_BIT(MTIMER0_TCCR0_REG,TCCR0_COM00_BIT);
-						    SET_BIT(MTIMER0_TCCR0_REG,TCCR0_COM01_BIT);
-						break;
-
-					default:
-						enum_Local_errorStatus = TIMER0_NOT_OK;
-				}
-			break;
-
-	    default:
-	        enum_Local_errorStatus = TIMER0_NOT_OK;
-	 	}
-		 
-		 return enum_Local_errorStatus;
- }
-
-/*
- * Description:
- * This function is used to check if an overflow event has occurred for Timer0.
- * The function continuously checks the Timer/Counter0 Overflow Flag (TOV0) until it becomes set.
- * Once the overflow flag is set, the function sets a local variable Local_u8OverFlowFlag to indicate the overflow event.
- * After that, the function clears the Timer/Counter0 Overflow Flag by setting the corresponding bit in the Timer/Counter0 Interrupt Flag Register (TIFR).
- * Finally, the function returns the value of Local_u8OverFlowFlag.
- */
-u8  MTIMER0_u8CheckOverFlow(void)
-{
-	u8 u8_Local_OverFlowFlag=0;
-	while(GET_BIT(MTIMER_TIFR_REG, TIMER0_TOV0_BIT)!=1);
-	u8_Local_OverFlowFlag=1;
-
-	// to clear Timer/Counter0 Overflow Flag
-	SET_BIT(MTIMER_TIFR_REG, TIMER0_TOV0_BIT);
-	 return u8_Local_OverFlowFlag;
-}
-
-/*
- * Description:
- * This function is used to check if a compare match event has occurred for Timer0.
- * The function continuously checks the Timer/Counter0 Compare Match Flag (OCF0) until it becomes set.
- * Once the compare match flag is set, the function sets a local variable Local_u8CompareMatchFlag to indicate the compare match event.
- * After that, the function clears the Timer/Counter0 Compare Match Flag by setting the corresponding bit in the Timer/Counter0 Interrupt Flag Register (TIFR).
- * Finally, the function returns the value of Local_u8CompareMatchFlag.
- */
-u8    MTIMER0_u8CheckCompareMatchMode(void)
-{
-	u8 u8_Local_CompareMatchFlag=0;
-	while(GET_BIT(MTIMER_TIFR_REG, TIMER0_OCF0_BIT)!=1);
-		u8_Local_CompareMatchFlag=1;
-
-	// to clear Timer/Counter0 CompareMatch Flag
-	SET_BIT(MTIMER_TIFR_REG, TIMER0_OCF0_BIT);
-	 return u8_Local_CompareMatchFlag;
-}
-
-
-/*
- * Description :
- * This function is used to set the compare match value for Timer/Counter0 in Timer0 of the microcontroller.
- * It takes an 8-bit value Copy_u8CompareMatchValue as a parameter, which represents the compare match value to be set.
- * The function sets the compare match value by assigning it to the MTIMER0_OCR0_REG register.
- * It returns OK to indicate that the operation was successful.
- */
-EN_timerError_t MTIMER0_SetCompareMatchValue(u8 Copy_u8CompareMatchValue)
-{
-	MTIMER0_OCR0_REG=Copy_u8CompareMatchValue;
-	return TIMER0_OK;
-}
-
-
-/*
- * Description :
- * This function is used to set the PWM duty cycle for Timer/Counter0 in Timer0 of the micro controller.
- * It takes an 8-bit value Copy_u8DutyCycle as a parameter, which represents the desired duty cycle as a percentage (0-100).
- * The function calculates the compare match value based on the duty cycle and the maximum duty cycle value.
- * If the duty cycle is within the valid range (0-100), it sets the compare match value by assigning it to the MTIMER0_OCR0_REG register.
- * It returns OK to indicate that the operation was successful.
- */
-EN_timerError_t MTIMER0_PWMDutyCycle(u8 u8_arg_DutyCycle)
-{
-	if(u8_arg_DutyCycle<=100&&u8_arg_DutyCycle>0)
-	{
-		u8 local_CompareMatchValue=(u8_arg_DutyCycle*TIMER0_OverFlowValue)/TIMER0_MaxDutyCycle;
-
-		MTIMER0_OCR0_REG=local_CompareMatchValue;
-	}
-	return TIMER0_OK;
-}
-
-
-/*
- * Description :
- * This function is used to set the callback function for the Timer/Counter0 overflow interrupt in Timer0 of the microcontroller.
- * It takes a function pointer TIMER0_OF_ISR as a parameter, which represents the callback function to be set.
- * The function assigns the callback function to the TIMER0_CALL_BACK_OverFlow function pointer.
- * It returns OK to indicate that the operation was successful.
- */
-EN_timerError_t MTIMER0_SetCallBack_OverFlow(void (*TIMER0_OF_ISR)(void))
-{
-	TIMER0_CALL_BACK_OverFlow=TIMER0_OF_ISR;
-	//SET_BIT(MTIMER_TIMSK_REG,TIMSK_TOIE0_BIT);
-	return TIMER0_OK;
-}
-
-/*
  * Description :
  * This function is used to set the callback function for the required time interrupt in Timer0 of the microcontroller.
  * It takes a function pointer TIMER0_OF_RT_ISR as a parameter, which represents the callback function to be set.
@@ -436,30 +184,6 @@ EN_timerError_t MTIMER0_SetCallBack_REQUIREDTIME(void (*TIMER0_OF_RT_ISR)(void))
 	return TIMER0_OK;
 }
 
-
-/*
- * Description :
- * This function is used to set the callback function for the Timer/Counter0 compare match interrupt in Timer0 of the microcontroller.
- * It takes a function pointer TIMER0_CMV_ISR as a parameter, which represents the callback function to be set.
- * The function assigns the callback function to the TIMER0_CALL_BACK_CompareMatch function pointer.
- * It also enables the compare match interrupt by setting the appropriate bit in the MTIMER_TIMSK_REG register.
- * It returns OK to indicate that the operation was successful.
- */
-EN_timerError_t MTIMER0_SetCallBack_CompareMatchValue(void (*TIMER0_CMV_ISR)(void))
-{
-	TIMER0_CALL_BACK_CompareMatch=TIMER0_CMV_ISR;
-	SET_BIT(MTIMER_TIMSK_REG,TIMSK_OCIE0_BIT);
-	return TIMER0_OK;
-}
-
-//TIMER0 COMP Timer/Counter0 Compare Match  Interrupt Vector
-void __vector_10(void) __attribute__((signal));
-void __vector_10(void)
-{
-	if (TIMER0_CALL_BACK_CompareMatch!=NULL_PTR) {
-		TIMER0_CALL_BACK_CompareMatch();
-	}
-}
 
 
 // TIMER0 OVF Timer/Counter0 Overflow  Interrupt Vector
@@ -505,11 +229,6 @@ void __vector_11(void)
 		NO_OVERFLOW_Done=0;
 	}
 
-//normal overflow time ISR Calling
-	if (TIMER0_CALL_BACK_OverFlow!=NULL_PTR)
-	{
-	TIMER0_CALL_BACK_OverFlow();
-	}
 }
 
 

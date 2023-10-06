@@ -26,10 +26,11 @@ typedef enum
  *******************************************************************************/
 
 EN_timer2_Error_t MTIMER2_Init(u8 u8_arg_Mode,u8 u8_arg_PreScaler);
-EN_timer2_Error_t MTIMER2_SetCallBack_OverFlow(void(*TIMER2_OF_ISR)(void));
+
+EN_timer2_Error_t MTIMER2_PWM_init(void);
 
 EN_timer2_Error_t MTIMER2_SetPWMNormalMode_DutyCycle(u8 u8_arg_DutyCycle);
-EN_timer2_Error_t MTIMER2_PWM_init(void);
+
 
 
 #endif /* TIMER2_INTERFACE_H_ */

@@ -7,10 +7,26 @@
 #include "../../LIB/STD_TYPES.h"
 #include "../../MCAL/exti/exti_interface.h"
 #include "../../MCAL/exti/exti_config.h"
-
+#include "../../MCAL/dio/dio_interface.h"
 #include "button_interface.h"
 #include "button_config.h"
 
+/*
+*
+* Description :
+* This function allows the user to define specific Pin to Polling in it unit the button is pressed
+*  the default input is High , then the button should apply low value if it's pressed.
+*/
+EN_buttonState_t HBTTN_IsButtonPressed(u8 u8_Arg_PortNumber ,  u8 u8_Arg_binNumber)
+{
+	EN_buttonState_t errorStatus=BUTTON_OK;
+	errorStatus= MDIO_SetPinDirection(u8_Arg_PortNumber,u8_Arg_binNumber,PIN_IN);
+	errorStatus=MDIO_SetPullupResistor(u8_Arg_PortNumber,u8_Arg_binNumber);
+    //Polling unit the input equals LOW
+	while(MDIO_u8GetPinValue(u8_Arg_PortNumber,u8_Arg_binNumber)!=0);
+
+return errorStatus;
+}
 
 /*
  * Description :
