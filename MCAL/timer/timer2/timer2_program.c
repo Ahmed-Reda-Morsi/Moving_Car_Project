@@ -2,7 +2,7 @@
  *                              REQUIRED INCLUDES                              *
  *******************************************************************************/
 #include "../../../LIB/STD_TYPES.h"
-
+#include "../../../LIB/BIT_MATH.h"
 #include "../../dio/dio_interface.h"
 
 #include "timer2_config.h"
